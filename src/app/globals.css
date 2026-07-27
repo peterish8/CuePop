@@ -208,3 +208,79 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
 }
+
+/* Landing page: each chapter gets its own composition, rather than repeating a card grid. */
+.cue-landing #product > .cue-container > .grid:first-child { grid-template-columns: minmax(0, 1.05fr) minmax(320px, .78fr); align-items: end; }
+.cue-landing #product .cue-panel { border-radius: 0; border-width: 0 0 0 1px; background: linear-gradient(90deg, rgba(65,105,225,.11), transparent); box-shadow: none; backdrop-filter: none; }
+.cue-landing #product .cue-panel::before, .cue-landing #product .cue-panel::after { display: none; }
+.cue-landing #product > .cue-container > .mt-14 { gap: 0; border-top: 1px solid rgba(255,255,255,.12); }
+.cue-landing #product > .cue-container > .mt-14 > div + div { border-left: 1px solid rgba(255,255,255,.12); }
+.cue-landing #product .cue-hover-card { min-height: 0; padding: 2rem 1.5rem 0; background: transparent; border: 0; box-shadow: none; }
+
+/* Product workflow: an open editorial checklist, never a presentation-style panel. */
+.cue-landing #product .cue-panel { padding: .25rem 0 .25rem 2rem !important; border: 0 !important; border-left: 1px solid rgba(255,255,255,.18) !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; backdrop-filter: none !important; overflow: visible; }
+.cue-landing #product .cue-panel::before, .cue-landing #product .cue-panel::after { display: none !important; }
+.cue-landing #product .cue-panel .space-y-5 { display: grid; gap: 0; }
+.cue-landing #product .cue-panel .space-y-5 > div { min-height: 54px; align-items: center; padding: .75rem 0; border-bottom: 1px solid rgba(255,255,255,.1); color: rgba(255,255,255,.78); }
+.cue-landing #product .cue-panel .space-y-5 > div:last-child { border-bottom: 0; }
+.cue-landing #product .cue-panel .space-y-5 svg { width: 18px; height: 18px; padding: 2px; border: 1px solid rgba(78,216,255,.45); border-radius: 999px; }
+
+.cue-landing #how > .cue-container { display: grid; grid-template-columns: minmax(340px,.82fr) minmax(440px,1.18fr); align-items: center; gap: clamp(3.5rem,7vw,8rem); }
+.cue-landing #how > .cue-container > .mt-14 { margin-top: 0; display: grid; grid-template-columns: 1fr !important; gap: 0; border-left: 1px solid rgba(255,255,255,.14); }
+.cue-landing #how .cue-hover-card { min-height: 0; display: grid; grid-template-columns: 3.5rem minmax(0,1fr); column-gap: 1.25rem; padding: 1.75rem 1rem 1.75rem 2rem; border: 0; border-bottom: 1px solid rgba(255,255,255,.11); border-radius: 0; background: linear-gradient(90deg, rgba(65,105,225,.11), transparent 72%); box-shadow: none; }
+.cue-landing #how .cue-hover-card .cue-hover-icon { grid-row: span 2; }
+.cue-landing #how .cue-hover-card h3 { margin-top: .25rem; }
+.cue-landing #how .cue-hover-card p { margin-top: .6rem; }
+
+.cue-landing #how + section > .cue-container > .mt-12 { display: grid; grid-template-columns: .75fr 1.15fr .75fr; align-items: end; gap: 1rem; }
+.cue-landing #how + section .cue-hover-card { min-height: 190px; padding: 1.5rem; }
+.cue-landing #how + section .cue-container > .mt-12 > div:nth-child(2) { transform: translateY(-2.5rem); }
+.cue-landing #how + section .cue-container > .mt-12 > div:nth-child(2) .cue-hover-card { min-height: 250px; border-color: rgba(110,120,255,.5); box-shadow: 0 22px 60px rgba(8,46,162,.23); }
+
+.cue-landing #how + section + section .cue-panel { background: linear-gradient(90deg, rgba(65,105,225,.14), rgba(124,92,240,.08), transparent); }
+.cue-landing #how + section + section .cue-panel::before { animation: cue-flow 4s ease-in-out infinite; }
+.cue-landing #how + section + section .cue-panel > div > div { transition: transform .35s var(--ease-out); }
+.cue-landing #how + section + section .cue-panel > div > div:hover { transform: translateY(-5px); }
+.cue-landing #how + section + section .cue-panel > div > div:last-child span:first-child { animation: cue-active-state 2.4s ease-in-out infinite; }
+
+.cue-landing #keepsake > .cue-container { width: min(var(--container-default), calc(100% - 64px)); }
+.cue-landing #keepsake > .cue-container::before { content: ""; position: absolute; inset: -2.5rem auto -2.5rem -2rem; width: min(560px, 55vw); border-left: 1px solid rgba(255,255,255,.24); border-top: 1px solid rgba(255,255,255,.12); background: linear-gradient(90deg, rgba(3,6,17,.58), rgba(3,6,17,.12)); pointer-events: none; }
+.cue-landing #keepsake > .cue-container > * { position: relative; z-index: 1; }
+.cue-landing #keepsake .cue-heading { max-width: 730px; }
+
+/* The keepsake is an image-led pause, not a panel sitting on top of the artwork. */
+.cue-landing #keepsake > .cue-container::before { display: none; }
+.cue-landing #keepsake > .cue-container { padding-left: 0; }
+.cue-landing #keepsake > .cue-container::after { content: ""; position: absolute; z-index: -1; inset: -5rem auto -5rem -5rem; width: min(620px, 58vw); background: linear-gradient(90deg, rgba(3,6,17,.74), rgba(3,6,17,.34) 62%, transparent); pointer-events: none; }
+
+.cue-landing #keepsake + section .cue-container > .mt-12 { display: grid; grid-template-columns: minmax(0,.88fr) minmax(0,1.12fr); grid-template-rows: repeat(4, minmax(98px, auto)); gap: 0 3.5rem; }
+.cue-landing #keepsake + section .cue-container > .mt-12 > div:nth-child(1) { grid-area: 1 / 1; }
+.cue-landing #keepsake + section .cue-container > .mt-12 > div:nth-child(2) { grid-area: 1 / 2 / span 2; }
+.cue-landing #keepsake + section .cue-container > .mt-12 > div:nth-child(3) { grid-area: 2 / 1; }
+.cue-landing #keepsake + section .cue-container > .mt-12 > div:nth-child(4) { grid-area: 3 / 1; }
+.cue-landing #keepsake + section .cue-container > .mt-12 > div:nth-child(5) { grid-area: 3 / 2; }
+.cue-landing #keepsake + section .cue-container > .mt-12 > div:nth-child(6) { grid-area: 4 / 2; }
+.cue-landing #keepsake + section .group, .cue-landing #keepsake + section .cue-glow-card { min-height: 0; height: 100%; padding: 1.25rem 0; border-width: 0 0 1px; border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; }
+.cue-landing #keepsake + section .cue-glow-card { padding: 1.7rem 0 1.7rem 2rem; border-left: 1px solid rgba(102,118,255,.6); background: linear-gradient(90deg, rgba(65,105,225,.12), transparent); }
+.cue-landing #keepsake + section .group::before, .cue-landing #keepsake + section .group::after { display: none; }
+.cue-landing #keepsake + section .group h3 { margin-top: 1.2rem; }
+.cue-landing #keepsake + section .group p { margin-top: .5rem; }
+
+.cue-landing #use-cases .cue-container > .mt-14 { display: grid; grid-template-columns: 1.12fr .88fr .88fr; gap: 1px; background: rgba(255,255,255,.14); }
+.cue-landing #use-cases .cue-hover-card { min-height: 205px; padding: 1.5rem; border: 0; border-radius: 0; background: rgba(6,13,35,.58); }
+.cue-landing #use-cases .cue-hover-card > .mt-14 { margin-top: 2.5rem; }
+.cue-landing #use-cases .cue-hover-card h3 { margin-top: .85rem; }
+.cue-landing #use-cases .cue-hover-card p { margin-top: .7rem; }
+
+@keyframes cue-flow { 0%,100% { transform: translateX(-4%); opacity: .42; } 50% { transform: translateX(4%); opacity: .9; } }
+@keyframes cue-active-state { 0%,100% { box-shadow: 0 0 0 0 rgba(65,105,225,.45); } 50% { box-shadow: 0 0 0 9px rgba(65,105,225,0); } }
+
+@media (max-width: 900px) {
+  .cue-landing #product > .cue-container > .grid:first-child, .cue-landing #how > .cue-container { grid-template-columns: 1fr; gap: 3rem; }
+  .cue-landing #how > .cue-container > .mt-14 { margin-top: 0; }
+  .cue-landing #how + section > .cue-container > .mt-12, .cue-landing #use-cases .cue-container > .mt-14 { grid-template-columns: 1fr; }
+  .cue-landing #how + section .cue-container > .mt-12 > div:nth-child(2) { transform: none; }
+  .cue-landing #keepsake + section .cue-container > .mt-12 { grid-template-columns: 1fr; grid-template-rows: none; gap: 0; }
+  .cue-landing #keepsake + section .cue-container > .mt-12 > div { grid-area: auto !important; }
+  .cue-landing #product > .cue-container > .mt-14 > div + div { border-left: 0; border-top: 1px solid rgba(255,255,255,.12); }
+}

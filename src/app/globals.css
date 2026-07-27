@@ -44,9 +44,18 @@
     border: 1px solid var(--border); border-radius: 9999px; padding: 7px 14px;
     background: rgba(255,255,255,.03);
   }
-  .cue-display { font-size: clamp(2.75rem, 6vw, 5.6rem); line-height: .98; letter-spacing: -.03em; font-weight: 550; }
-  .cue-heading { font-size: clamp(2.1rem, 4vw, 3.75rem); line-height: 1.02; letter-spacing: -.025em; font-weight: 550; }
-  .cue-body { color: var(--muted); font-size: clamp(1rem, 1.2vw, 1.0625rem); line-height: 1.65; }
+  /* Type hierarchy — Display/H2("cue-heading") reserved for the landing page; H1/H3/body variants/
+     label/caption/code are the app-wide scale used everywhere else (Phase 4). */
+  .cue-display { font-size: var(--text-display-size); line-height: var(--text-display-leading); letter-spacing: var(--text-display-tracking); font-weight: var(--text-display-weight); }
+  .cue-h1 { font-size: var(--text-h1-size); line-height: var(--text-h1-leading); letter-spacing: var(--text-h1-tracking); font-weight: var(--text-h1-weight); }
+  .cue-heading { font-size: var(--text-h2-size); line-height: var(--text-h2-leading); letter-spacing: var(--text-h2-tracking); font-weight: var(--text-h2-weight); }
+  .cue-h3 { font-size: var(--text-h3-size); line-height: var(--text-h3-leading); letter-spacing: var(--text-h3-tracking); font-weight: var(--text-h3-weight); }
+  .cue-body-lg { color: var(--color-foreground-muted); font-size: var(--text-body-lg-size); line-height: var(--text-body-lg-leading); }
+  .cue-body { color: var(--muted); font-size: var(--text-body-size); line-height: var(--text-body-leading); }
+  .cue-body-sm { color: var(--color-foreground-muted); font-size: var(--text-body-sm-size); line-height: var(--text-body-sm-leading); }
+  .cue-label { font-size: var(--text-label-size); font-weight: var(--text-label-weight); color: var(--color-foreground); }
+  .cue-caption { font-size: var(--text-caption-size); font-weight: var(--text-caption-weight); letter-spacing: var(--text-caption-tracking); text-transform: uppercase; color: var(--color-foreground-subtle); }
+  .cue-code { font-family: var(--font-mono); font-size: var(--text-code-size); }
   .cue-grid-noise {
     background-image: linear-gradient(rgba(255,255,255,.014) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.014) 1px, transparent 1px);
     background-size: 44px 44px;
@@ -179,7 +188,7 @@
   .scrollbar-thin::-webkit-scrollbar { width: 8px; height: 8px; }
   .scrollbar-thin::-webkit-scrollbar-thumb { background: #2a3038; border-radius: 99px; }
 
-  .stage-shell { min-height: 100svh; background: #020204; color: white; }
+  .stage-shell { min-height: 100svh; background: var(--color-background); color: white; }
   .stage-safe { width: min(1600px, calc(100% - 7vw)); margin-inline: auto; }
 
   @media (max-width: 720px) {

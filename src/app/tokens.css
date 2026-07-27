@@ -7,7 +7,7 @@
 
 :root {
   /* ---------- Primitive: neutral scale ---------- */
-  --neutral-1000: #01021d; /* deepest brand-tinted base */
+  --neutral-1000: #050507; /* deepest base — true near-black, matches auth/error/not-found shells */
   --neutral-950: #060811;
   --neutral-900: #0a0d12; /* consolidates the ~9 stray "near-black" chrome shades */
   --neutral-850: #0d1016;

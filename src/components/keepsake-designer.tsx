@@ -114,10 +114,10 @@ export function KeepsakeDesigner({
   return (
     <div>
       <div className="flex items-center gap-2 text-sm font-semibold">
-        <Sparkles className="size-4 text-[var(--cyan)]" />
+        <Sparkles className="size-4 text-[var(--color-primary-hover)]" />
         Choose your keepsake
       </div>
-      <div className="mt-4 overflow-hidden rounded-2xl border border-white/[.09] bg-black">
+      <div className="mt-4 overflow-hidden rounded-2xl border border-[var(--color-border-strong)] bg-black">
         <canvas ref={canvas} className="block h-auto w-full" aria-label="Session keepsake preview" />
       </div>
       <div className={`mt-4 grid gap-2 ${availableThemes.length === 1 ? "grid-cols-1" : availableThemes.length === 2 ? "grid-cols-2" : "grid-cols-3"}`}>
@@ -127,7 +127,8 @@ export function KeepsakeDesigner({
             <button
               key={id}
               onClick={() => setTheme(id)}
-              className={`rounded-xl border p-2 text-xs font-semibold transition ${theme === id ? "border-[var(--cyan)] bg-[rgba(77,127,224,.07)]" : "border-white/[.08] bg-white/[.025]"}`}
+              aria-pressed={theme === id}
+              className={`rounded-xl border p-2 text-xs font-semibold transition ${theme === id ? "border-[var(--color-primary-hover)] bg-[rgba(65,105,225,.07)]" : "border-[var(--color-border)] bg-white/[.025]"}`}
             >
               <span className="mx-auto mb-2 block h-8 rounded-lg border border-black/10" style={{ background: item.bg }} />
               {item.name}
@@ -135,7 +136,7 @@ export function KeepsakeDesigner({
           );
         })}
       </div>
-      <Button className="mt-4 w-full" variant="accent" onClick={download}>
+      <Button className="mt-4 w-full" variant="primary" onClick={download}>
         <Download className="size-4" />
         Download PNG
       </Button>

@@ -14,7 +14,7 @@ export default function JoinByCodePage() {
   const [code, setCode] = useState("");
 
   return (
-    <main className="grid min-h-svh place-items-center bg-[#07090c] p-5 text-white">
+    <main className="grid min-h-svh place-items-center bg-[var(--color-surface)] p-5 text-white">
       <form
         onSubmit={(event) => {
           event.preventDefault();
@@ -24,7 +24,7 @@ export default function JoinByCodePage() {
       >
         <CuePopLogo />
         <h1 className="mt-10 text-3xl font-semibold tracking-[-.045em]">Join a room.</h1>
-        <p className="mt-3 text-sm leading-6 text-[#7e8993]">
+        <p className="mt-3 text-sm leading-6 text-[var(--color-foreground-subtle)]">
           Enter the six-character code shown on the projector.
         </p>
         <Input

@@ -1,0 +1,11 @@
+node_modules
+.next
+.git
+coverage
+.env*
+data/cuepop.db*
+data/uploads/*
+!data/uploads/.gitkeep
+npm-debug.log*
+tsconfig.tsbuildinfo
+cuepop-mvp.zip

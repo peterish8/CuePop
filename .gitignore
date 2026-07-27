@@ -1,0 +1,14 @@
+node_modules
+.next
+out
+dist
+coverage
+.env
+.env.local
+data/cuepop.db
+data/cuepop.db-shm
+data/cuepop.db-wal
+data/uploads/*
+!data/uploads/.gitkeep
+npm-debug.log*
+.DS_Store

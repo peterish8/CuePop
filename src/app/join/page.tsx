@@ -39,7 +39,7 @@ export default function JoinByCodePage() {
           aria-label="Room code"
           autoFocus
         />
-        <Button className="mt-3 w-full" size="lg" variant="accent" disabled={code.length !== 6}>
+        <Button className="mt-3 w-full" size="lg" variant="primary" disabled={code.length !== 6}>
           Continue
           <ArrowRight className="size-4" />
         </Button>

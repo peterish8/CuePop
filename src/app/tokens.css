@@ -1,0 +1,245 @@
+/*
+ * Design tokens — single source of truth.
+ * Primitives (raw scales) feed semantic tokens (what components consume).
+ * Components should reference semantic tokens (--color-*, --space-*, --radius-*, --text-*),
+ * never primitives or hex values directly.
+ */
+
+:root {
+  /* ---------- Primitive: neutral scale ---------- */
+  --neutral-1000: #01021d; /* deepest brand-tinted base */
+  --neutral-950: #060811;
+  --neutral-900: #0a0d12; /* consolidates the ~9 stray "near-black" chrome shades */
+  --neutral-850: #0d1016;
+  --neutral-800: #151a24;
+  --neutral-700: #1c2230;
+  --neutral-500: #7a7a7a; /* WCAG AA-safe subtle foreground */
+  --neutral-400: #a1a1a1;
+  --neutral-100: #ededed;
+  --neutral-0: #ffffff;
+
+  /* Light-mode neutral scale (inverted ramp, same roles) */
+  --neutral-light-0: #ffffff;
+  --neutral-light-50: #f7f8f9;
+  --neutral-light-100: #eef0f2;
+  --neutral-light-300: #d7dade;
+  --neutral-light-500: #6b7280;
+  --neutral-light-700: #3a3f47;
+  --neutral-light-900: #14161a;
+
+  /* ---------- Primitive: brand ---------- */
+  --brand-blue-900: #082ea2;
+  --brand-blue-600: #4169e1;
+  --brand-blue-400: #7c9bf0;
+  --brand-violet-900: #422bc1;
+  --brand-violet-600: #7c5cf0;
+
+  /* ---------- Primitive: status ---------- */
+  --status-success-500: #6ed7b2;
+  --status-warning-500: #f4c06a;
+  --status-danger-500: #ff7f87;
+  --status-info-500: #4169e1;
+
+  /* ---------- Primitive: spacing (4px base) ---------- */
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* ---------- Primitive: radius ---------- */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* ---------- Primitive: border width ---------- */
+  --border-width-thin: 1px;
+  --border-width-thick: 2px;
+
+  /* ---------- Primitive: shadow ---------- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, .35);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, .5);
+  --shadow-glow-primary: 0 8px 28px rgba(65, 105, 225, .28);
+  --shadow-glow-accent: 0 8px 28px rgba(124, 92, 240, .28);
+
+  /* ---------- Primitive: typography ---------- */
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* ---------- Primitive: motion ---------- */
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 350ms;
+  --ease: cubic-bezier(.4, 0, .2, 1);
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+
+  /* ---------- Primitive: layout ---------- */
+  --container-narrow: 720px;
+  --container-default: 1240px;
+  --container-wide: 1440px;
+
+  --height-sm: 36px;
+  --height-md: 40px;
+  --height-lg: 44px;
+
+  /* ---------- Semantic: color (dark theme — product default) ---------- */
+  --color-background: var(--neutral-1000);
+  --color-surface-muted: var(--neutral-950);
+  --color-surface: var(--neutral-900);
+  --color-surface-elevated: var(--neutral-800);
+
+  --color-foreground: var(--neutral-100);
+  --color-foreground-muted: var(--neutral-400);
+  --color-foreground-subtle: var(--neutral-500);
+  --color-foreground-inverse: var(--neutral-900);
+
+  --color-border: rgba(255, 255, 255, .08);
+  --color-border-strong: rgba(255, 255, 255, .14);
+  --color-border-interactive: rgba(65, 105, 225, .4);
+
+  --color-primary: var(--brand-blue-900);
+  --color-primary-hover: var(--brand-blue-600);
+  --color-primary-active: #062578;
+  --color-primary-foreground: #061013;
+
+  --color-secondary: rgba(255, 255, 255, .04);
+  --color-secondary-hover: rgba(255, 255, 255, .07);
+  --color-secondary-foreground: var(--color-foreground);
+
+  --color-accent: var(--brand-violet-900);
+  --color-accent-hover: var(--brand-violet-600);
+  --color-accent-foreground: var(--neutral-0);
+
+  --color-success: var(--status-success-500);
+  --color-warning: var(--status-warning-500);
+  --color-danger: var(--status-danger-500);
+  --color-info: var(--status-info-500);
+
+  --color-focus-ring: var(--brand-blue-600);
+  --color-selection: rgba(65, 105, 225, .32);
+  --color-overlay: rgba(0, 0, 0, .7);
+
+  /* ---------- Semantic: typography scale ---------- */
+  /* Display: landing hero statement only */
+  --text-display-size: clamp(2.75rem, 6vw, 5.6rem);
+  --text-display-leading: .98;
+  --text-display-tracking: -.03em;
+  --text-display-weight: 550;
+
+  /* H1: app page title */
+  --text-h1-size: clamp(2rem, 3.4vw, 3rem);
+  --text-h1-leading: 1.05;
+  --text-h1-tracking: -.045em;
+  --text-h1-weight: 600;
+
+  /* H2: major section title */
+  --text-h2-size: clamp(2.1rem, 4vw, 3.75rem);
+  --text-h2-leading: 1.02;
+  --text-h2-tracking: -.025em;
+  --text-h2-weight: 550;
+
+  /* H3: card / subsection title */
+  --text-h3-size: 1.25rem;
+  --text-h3-leading: 1.3;
+  --text-h3-tracking: -.02em;
+  --text-h3-weight: 600;
+
+  /* Body large: intro copy */
+  --text-body-lg-size: 1.125rem;
+  --text-body-lg-leading: 1.7;
+
+  /* Body: default readable content */
+  --text-body-size: clamp(1rem, 1.2vw, 1.0625rem);
+  --text-body-leading: 1.65;
+
+  /* Body small: secondary content */
+  --text-body-sm-size: .8125rem;
+  --text-body-sm-leading: 1.5;
+
+  /* Label: buttons, form labels, nav */
+  --text-label-size: .8125rem;
+  --text-label-weight: 600;
+
+  /* Caption: metadata, helper text, timestamps */
+  --text-caption-size: .6875rem;
+  --text-caption-tracking: .13em;
+  --text-caption-weight: 600;
+
+  /* Code / monospace */
+  --text-code-size: .875rem;
+
+  /* ---------- Legacy aliases (kept for incremental migration — remove once every
+     consumer below is moved to the semantic names above; see migration plan Phase 9.11) ---------- */
+  --bg: var(--color-background);
+  --bg-elevated: var(--color-surface-muted);
+  --surface: var(--color-surface);
+  --surface-2: var(--color-surface-elevated);
+  --surface-3: var(--neutral-700);
+  --border: var(--color-border);
+  --border-strong: var(--color-border-strong);
+  --text: var(--color-foreground);
+  --muted: var(--color-foreground-muted);
+  --faint: var(--color-foreground-subtle);
+  --cyan: var(--color-primary);
+  --cyan-strong: var(--color-primary-hover);
+  --blue: #2f52a8;
+  --violet: var(--color-accent);
+  --violet-strong: var(--color-accent-hover);
+  --rose: #b38d98;
+  --warm: #b77d6b;
+  --danger: var(--color-danger);
+  --success: var(--color-success);
+  --warning: var(--color-warning);
+  --radius: var(--radius-md);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/*
+ * Light theme — values only, not yet wired to a UI toggle.
+ * Activate by setting data-theme="light" on <html> once a theme switch exists;
+ * <html> currently forces class="dark" unconditionally in src/app/layout.tsx.
+ */
+:root[data-theme="light"] {
+  --color-background: var(--neutral-light-0);
+  --color-surface-muted: var(--neutral-light-50);
+  --color-surface: var(--neutral-light-100);
+  --color-surface-elevated: var(--neutral-light-0);
+
+  --color-foreground: var(--neutral-light-900);
+  --color-foreground-muted: var(--neutral-light-700);
+  --color-foreground-subtle: var(--neutral-light-500);
+  --color-foreground-inverse: var(--neutral-light-0);
+
+  --color-border: rgba(20, 22, 26, .1);
+  --color-border-strong: rgba(20, 22, 26, .18);
+  --color-border-interactive: rgba(8, 46, 162, .35);
+
+  --color-primary: var(--brand-blue-900);
+  --color-primary-hover: #06277f;
+  --color-primary-active: #051f66;
+  --color-primary-foreground: var(--neutral-0);
+
+  --color-secondary: rgba(20, 22, 26, .04);
+  --color-secondary-hover: rgba(20, 22, 26, .07);
+  --color-secondary-foreground: var(--color-foreground);
+
+  --color-accent: var(--brand-violet-900);
+  --color-accent-hover: #35228f;
+  --color-accent-foreground: var(--neutral-0);
+
+  --color-focus-ring: var(--brand-blue-900);
+  --color-selection: rgba(8, 46, 162, .18);
+  --color-overlay: rgba(20, 22, 26, .45);
+}

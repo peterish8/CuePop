@@ -21,7 +21,22 @@
 }
 
 @layer components {
-  .cue-container { width: min(1240px, calc(100% - 48px)); margin-inline: auto; }
+  /* Container: mobile 16px/side, tablet 24px/side, desktop 32px/side gutters (Phase 5 layout primitive) */
+  .cue-container, .cue-container-narrow, .cue-container-wide, .cue-container-full {
+    --gutter: 32px;
+    width: min(var(--container-max, var(--container-default)), calc(100% - var(--gutter)));
+    margin-inline: auto;
+  }
+  .cue-container { --container-max: var(--container-default); }
+  .cue-container-narrow { --container-max: var(--container-narrow); }
+  .cue-container-wide { --container-max: var(--container-wide); }
+  .cue-container-full { --container-max: 100%; }
+  @media (min-width: 640px) {
+    .cue-container, .cue-container-narrow, .cue-container-wide, .cue-container-full { --gutter: 48px; }
+  }
+  @media (min-width: 1024px) {
+    .cue-container, .cue-container-narrow, .cue-container-wide, .cue-container-full { --gutter: 64px; }
+  }
   .cue-section { padding-block: clamp(96px, 13vw, 190px); position: relative; }
   .cue-eyebrow {
     display: inline-flex; align-items: center; gap: 6px;
@@ -168,7 +183,6 @@
   .stage-safe { width: min(1600px, calc(100% - 7vw)); margin-inline: auto; }
 
   @media (max-width: 720px) {
-    .cue-container { width: min(100% - 32px, 1240px); }
     .cue-section { padding-block: 96px; }
     .cue-display { font-size: clamp(3rem, 14vw, 4.8rem); }
   }

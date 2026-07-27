@@ -39,7 +39,27 @@ export function LandingPage(){const [menu,setMenu]=useState(false);return <main 
  <section id="use-cases" className="relative overflow-hidden cue-section"><img src="/art/use-cases-glow.png" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover object-top opacity-75"/><div className="absolute inset-0 bg-gradient-to-b from-[#050507] via-[#050507]/45 to-[#050507]"/><div className="cue-container relative z-10"><Reveal><p className="cue-eyebrow">Built for real rooms</p><h2 className="cue-heading mt-6">From a college hall<br/>to a team workshop.</h2></Reveal><div className="mt-14 grid gap-4 lg:grid-cols-3">{useCases.map((item,index)=><Reveal key={item.title} delay={index*.07}><div className="cue-hover-card cue-panel min-h-[280px] p-7"><div className="cue-hover-icon grid size-10 place-items-center rounded-lg border border-white/[.08] bg-white/[.03]"><item.icon className="size-4" style={{color:index%2===0?"var(--cyan-strong)":"var(--violet-strong)"}}/></div><div className="mt-14 text-xs font-semibold uppercase tracking-[.14em] text-[#7d7d7d]">0{index+1}</div><h3 className="mt-4 text-xl font-semibold tracking-[-.02em]">{item.title}</h3><p className="mt-4 text-sm leading-7 text-[#8a8a8a]">{item.copy}</p></div></Reveal>)}</div></div></section>
 
  <section className="relative overflow-hidden border-t border-white/[.06] py-24"><img src="/art/cta-glow.png" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-50"/><div className="absolute inset-0 bg-gradient-to-t from-[#050507] via-transparent to-[#050507]/70"/><div className="cue-container relative z-10 text-center"><Reveal><h2 className="cue-heading">Make your next<br/>room respond.</h2><p className="cue-body mx-auto mt-6 max-w-xl">Create a deck, run a private dry test and experience the host, attendee, remote and stage views together.</p><div className="mt-8 flex justify-center gap-3"><Button asChild size="lg"><Link href="/register">Create a live deck<ArrowRight className="size-4"/></Link></Button><Button asChild variant="secondary" size="lg"><Link href="/login">Open demo</Link></Button></div></Reveal></div></section>
- <footer className="border-t border-white/[.06] py-8"><div className="cue-container flex flex-col items-center justify-between gap-4 text-xs text-[#7d7d7d] sm:flex-row"><CuePopLogo/><span>Image-first live presentations · Built for rooms that should respond.</span><span>© 2026 CuePop</span></div></footer>
+ <footer className="relative isolate overflow-hidden border-t border-white/[.06] pt-20 pb-8">
+  <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-[420px] overflow-hidden">
+   <div className="absolute left-1/2 bottom-[-300px] h-[480px] w-[160%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,.92)_0%,_rgba(65,105,225,.62)_22%,_rgba(8,46,162,.34)_45%,_transparent_68%)] blur-[60px]"/>
+   <div className="absolute left-1/2 bottom-[-378px] h-[420px] w-[160%] -translate-x-1/2 rounded-[50%] bg-[#050507]"/>
+  </div>
+  <div className="cue-container relative z-10">
+   <div className="flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
+    <div><CuePopLogo/><p className="mt-5 max-w-sm text-sm leading-6 text-[#8a8a8a]">Image-first live presentations, built for rooms that should respond — upload slides, run polls and quizzes, and control every moment from the stage.</p></div>
+    <nav className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-[#a1a1a1] sm:justify-end">
+     <a href="#product" className="hover:text-white">Product</a>
+     <a href="#how" className="hover:text-white">How it works</a>
+     <a href="#use-cases" className="hover:text-white">Use cases</a>
+     <a href="#keepsake" className="hover:text-white">Keepsake</a>
+    </nav>
+   </div>
+   <div className="mt-16 flex flex-col items-center justify-between gap-3 border-t border-white/[.06] pt-6 text-xs text-[#7d7d7d] sm:flex-row">
+    <span>© 2026 CuePop</span>
+    <span>Built for rooms that should respond.</span>
+   </div>
+  </div>
+ </footer>
  </main>}
 function HeroStat({value,label}:{value:string;label:string}){return <div className="text-center sm:text-left"><div className="cue-gradient-text text-4xl font-semibold tracking-[-.03em]">{value}</div><div className="mt-2 text-sm leading-6 text-[#8a8a8a]">{label}</div></div>}
 function FeatureCard({icon:Icon,title,copy,index=0}:{icon:typeof Smartphone;title:string;copy:string;index?:number}){const tone=index%2===0?"var(--cyan-strong)":"var(--violet-strong)";return <div className="cue-hover-card cue-panel min-h-[220px] p-7"><div className="cue-hover-icon grid size-10 place-items-center rounded-lg border border-white/[.08] bg-white/[.03]"><Icon className="size-4" style={{color:tone}}/></div><h3 className="mt-6 font-semibold">{title}</h3><p className="mt-3 text-sm leading-6 text-[#8a8a8a]">{copy}</p></div>}

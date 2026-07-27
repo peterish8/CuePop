@@ -9,13 +9,13 @@ export const Sheet = DialogPrimitive.Root;
 export const SheetTrigger = DialogPrimitive.Trigger;
 export const SheetClose = DialogPrimitive.Close;
 
-const sheetVariants = cva("fixed z-[90] flex flex-col border-white/[.065] bg-[var(--color-surface-muted)] p-5", {
+const sheetVariants = cva("fixed z-[90] flex flex-col overflow-y-auto border-white/[.065] bg-[var(--color-surface-muted)] p-5 scrollbar-thin", {
   variants: {
     side: {
-      right: "inset-y-0 right-0 h-full w-full max-w-sm border-l",
-      left: "inset-y-0 left-0 h-full w-full max-w-sm border-r",
-      bottom: "inset-x-0 bottom-0 max-h-[85svh] border-t",
-      top: "inset-x-0 top-0 max-h-[85svh] border-b",
+      right: "cue-sheet-right inset-y-0 right-0 h-full w-full max-w-sm border-l",
+      left: "cue-sheet-left inset-y-0 left-0 h-full w-full max-w-sm border-r",
+      bottom: "cue-sheet-bottom inset-x-0 bottom-0 max-h-[85svh] border-t",
+      top: "cue-sheet-top inset-x-0 top-0 max-h-[85svh] border-b",
     },
   },
   defaultVariants: { side: "right" },
@@ -26,7 +26,7 @@ export interface SheetContentProps extends React.ComponentPropsWithoutRef<typeof
 export const SheetContent = React.forwardRef<React.ElementRef<typeof DialogPrimitive.Content>, SheetContentProps>(
   ({ className, side, children, ...props }, ref) => (
     <DialogPrimitive.Portal>
-      <DialogPrimitive.Overlay className="fixed inset-0 z-[90] bg-[var(--color-overlay)] backdrop-blur-sm" />
+      <DialogPrimitive.Overlay className="cue-overlay fixed inset-0 z-[90] bg-[var(--color-overlay)] backdrop-blur-sm" />
       <DialogPrimitive.Content ref={ref} className={cn(sheetVariants({ side }), className)} {...props}>
         {children}
         <DialogPrimitive.Close className="cue-focus absolute right-4 top-4 rounded-full text-[var(--color-foreground-subtle)] hover:text-white" aria-label="Close panel">

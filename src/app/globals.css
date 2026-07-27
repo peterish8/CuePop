@@ -135,12 +135,31 @@
   .cue-focus:hover { border-color: rgba(255,255,255,.16); }
   .cue-focus:focus-visible { border-color: rgba(65,105,225,.6); box-shadow: 0 0 0 3px rgba(65,105,225,.16); }
 
-  /* Button interaction system: flat, fast, subtle glow on hover */
+  /* Button interaction system: flat, fast, subtle glow on hover.
+     Press feedback is asymmetric on purpose — snap down instantly (35ms) so the
+     click feels immediate, then ease back out slower (180ms) so release feels soft. */
   .cue-btn {
-    transition: background-color .15s var(--ease), border-color .15s var(--ease), color .15s var(--ease), opacity .15s var(--ease), transform .1s var(--ease), box-shadow .2s var(--ease);
+    transition: background-color .15s var(--ease), border-color .15s var(--ease), color .15s var(--ease), opacity .15s var(--ease), transform .18s var(--ease-out), box-shadow .2s var(--ease);
   }
-  .cue-btn:active { transform: scale(.97); }
+  .cue-btn:active { transform: scale(.96); transition-duration: .035s; }
   .cue-btn:disabled { transform: none !important; }
+
+  /* Overlay + dialog + sheet enter/exit — keyed off Radix's data-state, no plugin needed.
+     `forwards` on both states means the resting transform always matches, animation or not. */
+  .cue-overlay[data-state="open"] { animation: cue-fade-in .2s var(--ease-out) forwards; }
+  .cue-overlay[data-state="closed"] { animation: cue-fade-out .15s var(--ease) forwards; }
+
+  .cue-dialog-content[data-state="open"] { animation: cue-dialog-in .22s var(--ease-out) forwards; }
+  .cue-dialog-content[data-state="closed"] { animation: cue-dialog-out .15s var(--ease) forwards; }
+
+  .cue-sheet-right[data-state="open"] { animation: cue-sheet-in-right .3s var(--ease-out) forwards; }
+  .cue-sheet-right[data-state="closed"] { animation: cue-sheet-out-right .22s var(--ease) forwards; }
+  .cue-sheet-left[data-state="open"] { animation: cue-sheet-in-left .3s var(--ease-out) forwards; }
+  .cue-sheet-left[data-state="closed"] { animation: cue-sheet-out-left .22s var(--ease) forwards; }
+  .cue-sheet-bottom[data-state="open"] { animation: cue-sheet-in-bottom .3s var(--ease-out) forwards; }
+  .cue-sheet-bottom[data-state="closed"] { animation: cue-sheet-out-bottom .22s var(--ease) forwards; }
+  .cue-sheet-top[data-state="open"] { animation: cue-sheet-in-top .3s var(--ease-out) forwards; }
+  .cue-sheet-top[data-state="closed"] { animation: cue-sheet-out-top .22s var(--ease) forwards; }
 
   /* Hover micro-interaction for interactive cards: lift + soft blue glow-in */
   .cue-hover-card {
@@ -172,6 +191,19 @@
 }
 
 @keyframes cue-pulse { 0%,100% { opacity: .5; } 50% { opacity: 1; } }
+
+@keyframes cue-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cue-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes cue-dialog-in { from { opacity: 0; transform: translate(-50%,-46%) scale(.96); } to { opacity: 1; transform: translate(-50%,-50%) scale(1); } }
+@keyframes cue-dialog-out { from { opacity: 1; transform: translate(-50%,-50%) scale(1); } to { opacity: 0; transform: translate(-50%,-46%) scale(.96); } }
+@keyframes cue-sheet-in-right { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes cue-sheet-out-right { from { transform: translateX(0); } to { transform: translateX(100%); } }
+@keyframes cue-sheet-in-left { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+@keyframes cue-sheet-out-left { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+@keyframes cue-sheet-in-bottom { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes cue-sheet-out-bottom { from { transform: translateY(0); } to { transform: translateY(100%); } }
+@keyframes cue-sheet-in-top { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+@keyframes cue-sheet-out-top { from { transform: translateY(0); } to { transform: translateY(-100%); } }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }

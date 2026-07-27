@@ -12,7 +12,7 @@ export const DialogOverlay = React.forwardRef<React.ElementRef<typeof DialogPrim
   ({ className, ...props }, ref) => (
     <DialogPrimitive.Overlay
       ref={ref}
-      className={cn("fixed inset-0 z-[90] bg-[var(--color-overlay)] backdrop-blur-sm", className)}
+      className={cn("cue-overlay fixed inset-0 z-[90] bg-[var(--color-overlay)] backdrop-blur-sm", className)}
       {...props}
     />
   ),
@@ -26,7 +26,7 @@ export const DialogContent = React.forwardRef<React.ElementRef<typeof DialogPrim
       <DialogPrimitive.Content
         ref={ref}
         className={cn(
-          "cue-panel fixed left-1/2 top-1/2 z-[91] max-h-[90svh] w-[min(560px,calc(100vw-32px))] -translate-x-1/2 -translate-y-1/2 overflow-y-auto p-6 scrollbar-thin",
+          "cue-panel cue-dialog-content fixed left-1/2 top-1/2 z-[91] max-h-[90svh] w-[min(560px,calc(100vw-32px))] overflow-y-auto p-6 scrollbar-thin",
           className,
         )}
         {...props}

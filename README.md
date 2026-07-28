@@ -1,8 +1,8 @@
-# CuePop
+# Deckactive
 
-A production-shaped, locally runnable MVP for image-first live presentations. CuePop turns uploaded slide images into a synchronized room experience with QR joining, polls, quizzes, presenter-controlled reveals, a projector-safe stage, phone remote, reports, and attendee keepsake cards.
+A production-shaped, locally runnable MVP for image-first live presentations. Deckactive turns uploaded slide images into a synchronized room experience with QR joining, polls, quizzes, presenter-controlled reveals, a projector-safe stage, phone remote, reports, and attendee keepsake cards.
 
-![CuePop](public/art/renders/demo-slide-1.png)
+![Deckactive](public/art/renders/demo-slide-1.png)
 
 ## Run locally
 
@@ -39,13 +39,13 @@ The first run creates `data/cuepop.db`, seeds the demo user and a mixed slide/po
 
 ## QR testing on a phone
 
-A phone cannot reach your computer through `localhost`. Put both devices on the same network, find the computer's LAN address, and open CuePop through that address, for example:
+A phone cannot reach your computer through `localhost`. Put both devices on the same network, find the computer's LAN address, and open Deckactive through that address, for example:
 
 ```text
 http://192.168.1.24:3000
 ```
 
-Start the session from that URL. CuePop generates the QR code from the browser origin, so the phone receives a reachable LAN join link. Windows Firewall may ask permission for Node.js to accept private-network connections.
+Start the session from that URL. Deckactive generates the QR code from the browser origin, so the phone receives a reachable LAN join link. Windows Firewall may ask permission for Node.js to accept private-network connections.
 
 For a deployed environment, set:
 

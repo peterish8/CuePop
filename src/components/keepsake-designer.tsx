@@ -69,7 +69,7 @@ export function KeepsakeDesigner({
 
     context.fillStyle = selectedTheme.accent;
     context.font = "700 30px Inter, Arial";
-    context.fillText("CUEPOP SESSION KEEPSAKE", 80, 110);
+    context.fillText("DECKACTIVE SESSION KEEPSAKE", 80, 110);
 
     context.fillStyle = selectedTheme.text;
     context.font = "650 78px Inter, Arial";
@@ -93,7 +93,7 @@ export function KeepsakeDesigner({
 
     context.fillStyle = selectedTheme.text;
     context.font = "700 32px Inter, Arial";
-    context.fillText("CuePop", 80, 1240);
+    context.fillText("Deckactive", 80, 1240);
     context.textAlign = "right";
     context.font = "500 22px Inter, Arial";
     context.fillStyle = theme === "paper" ? "#555b5e" : "#77818a";
@@ -105,7 +105,7 @@ export function KeepsakeDesigner({
     const element = canvas.current;
     if (!element) return;
     const anchor = document.createElement("a");
-    anchor.download = `cuepop-${code}-${theme}.png`;
+    anchor.download = `deckactive-${code}-${theme}.png`;
     anchor.href = element.toDataURL("image/png");
     anchor.click();
     toast({ title: "Keepsake downloaded", description: "Saved as a high-resolution PNG." });

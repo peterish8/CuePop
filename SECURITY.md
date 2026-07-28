@@ -1,6 +1,6 @@
 # Security
 
-CuePop is shipped with a local demo account. Delete or reset `demo@cuepop.app` before exposing an installation to the public internet.
+Deckactive is shipped with a local demo account. Delete or reset `demo@cuepop.app` before exposing an installation to the public internet.
 
 For a public or commercial deployment:
 

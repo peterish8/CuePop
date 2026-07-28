@@ -1,4 +1,4 @@
-# CuePop Design System
+# Deckactive Design System
 
 Single source of truth for visual and interaction decisions across the app. If you're adding a
 new page or component and need a color, size, or spacing value that isn't listed here, that's a

@@ -5,7 +5,7 @@ const localImageUrl = z
   .string()
   .trim()
   .max(500)
-  .refine((value) => value.startsWith("/api/media/") || value.startsWith("/art/"), "Slide images must use a CuePop media URL.");
+  .refine((value) => value.startsWith("/api/media/") || value.startsWith("/art/"), "Slide images must use a Deckactive media URL.");
 
 export const pollOptionSchema = z.object({
   id: z.string().trim().min(1).max(80),

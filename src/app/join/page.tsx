@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
-import { CuePopLogo } from "@/components/logo";
+import { DeckactiveLogo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -22,7 +22,7 @@ export default function JoinByCodePage() {
         }}
         className="cue-panel w-full max-w-sm p-6"
       >
-        <CuePopLogo />
+        <DeckactiveLogo />
         <h1 className="mt-10 text-3xl font-semibold tracking-[-.045em]">Join a room.</h1>
         <p className="mt-3 text-sm leading-6 text-[var(--color-foreground-subtle)]">
           Enter the six-character code shown on the projector.

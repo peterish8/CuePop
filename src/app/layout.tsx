@@ -9,8 +9,10 @@ const display = Bricolage_Grotesque({ subsets: ["latin"], weight: "variable", va
 const body = Hanken_Grotesk({ subsets: ["latin"], weight: "variable", variable: "--font-body", display: "swap" });
 
 export const metadata: Metadata = {
-  title: { default: "CuePop — Make every room respond", template: "%s · CuePop" },
+  title: { default: "Deckactive — Make every room respond", template: "%s · Deckactive" },
+  applicationName: "Deckactive",
   description: "Upload slide images, insert live polls and quizzes, and run a controlled audience experience from any screen.",
+  icons: { icon: "/icon.png" },
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
   referrer: "no-referrer",
   robots: { index: true, follow: true },

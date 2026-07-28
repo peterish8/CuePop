@@ -55,7 +55,7 @@ export function ReportPanel({ code, token }: { code: string; token: string }) {
     const objectUrl = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
     const link = document.createElement("a");
     link.href = objectUrl;
-    link.download = `cuepop-${code}-report.csv`;
+    link.download = `deckactive-${code}-report.csv`;
     link.click();
     setTimeout(() => URL.revokeObjectURL(objectUrl), 0);
   }
@@ -65,7 +65,7 @@ export function ReportPanel({ code, token }: { code: string; token: string }) {
     const questionById = new Map(report.moments.map((moment) => [moment.itemId, moment.question]));
     const rows = [["Student", "Question", "Answer", "Answered at"], ...report.answers.map((answer) => [answer.attendeeName, questionById.get(answer.itemId) || answer.itemId, answer.answer, new Date(answer.answeredAt).toISOString()])];
     const csv = rows.map((row) => row.map((cell) => `"${cell.replaceAll('"', '""')}"`).join(",")).join("\n");
-    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" })); const link = document.createElement("a"); link.href = url; link.download = `cuepop-${code}-student-answers.csv`; link.click(); setTimeout(() => URL.revokeObjectURL(url), 0);
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" })); const link = document.createElement("a"); link.href = url; link.download = `deckactive-${code}-student-answers.csv`; link.click(); setTimeout(() => URL.revokeObjectURL(url), 0);
   }
 
   if (error) return <div className="text-sm text-[var(--color-danger)]">{error}</div>;

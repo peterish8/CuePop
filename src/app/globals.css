@@ -3,7 +3,7 @@
 
 @layer base {
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; background: var(--bg); }
+  html { color-scheme: dark; scroll-behavior: smooth; background: var(--bg); }
   body {
     margin: 0;
     color: var(--text);
@@ -288,3 +288,81 @@
 /* Keep the opening message visually centered even when its line breaks change. */
 .cue-landing > section:first-of-type > .cue-container > .cue-reveal { width: min(100%, 48rem); margin-inline: auto; text-align: center; }
 .cue-landing > section:first-of-type .cue-display { width: 100%; margin-inline: auto; text-align: center; }
+
+/* Product workspace: a restrained near-black foundation with one blue action signal. */
+.deckactive-shell > aside {
+  background: var(--color-surface-muted);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.deckactive-shell header {
+  background: var(--color-surface-muted);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.deckactive-shell nav a[data-active] {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface-elevated);
+  box-shadow: none;
+}
+
+.deck-builder-shell > header,
+.deck-builder-shell > div > aside {
+  background: var(--color-surface-muted);
+}
+
+.deck-builder-canvas {
+  background: var(--color-background);
+}
+
+.deck-builder-empty-state {
+  animation: deck-builder-enter var(--duration-slow) var(--ease-out) both;
+  box-shadow: var(--shadow-lg);
+}
+
+@keyframes deck-builder-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Authentication fields stay dark even when a browser supplies saved credentials. */
+.auth-input {
+  appearance: none;
+  color-scheme: dark;
+  background: #050507 !important;
+  border-color: #262626 !important;
+  box-shadow: none !important;
+  color: var(--color-foreground) !important;
+}
+
+.auth-input:hover {
+  border-color: #333333 !important;
+}
+
+.auth-input:focus-visible {
+  border-color: #3b3b3b !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, .08) !important;
+}
+
+.auth-input:-webkit-autofill,
+.auth-input:-webkit-autofill:hover,
+.auth-input:-webkit-autofill:focus,
+.auth-input:autofill {
+  background-color: #050507 !important;
+  -webkit-text-fill-color: #f5f5f5 !important;
+  -webkit-box-shadow: inset 0 0 0 100vmax #050507 !important;
+  box-shadow: inset 0 0 0 100vmax #050507 !important;
+  border-color: #262626 !important;
+  caret-color: #f5f5f5;
+  background-clip: padding-box !important;
+  transition: background-color 999999s step-end 0s, color 999999s step-end 0s;
+}

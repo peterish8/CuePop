@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import {useRef, useState} from 'react';
 import type {ChangeEvent, FormEvent} from 'react';
-import {useRouter} from 'next/navigation';
+import {useRouter, useSearchParams} from 'next/navigation';
 import {
   ArrowUpRight,
   CalendarDays,
@@ -11,6 +11,8 @@ import {
   MoreHorizontal,
   Plus,
   Radio,
+  LogOut,
+  Settings,
   Sparkles,
   Upload,
 } from 'lucide-react';
@@ -20,11 +22,12 @@ import {toast} from '@/components/ui/toaster';
 import {EmptyState} from '@/components/patterns/empty-state';
 import {PageHeader} from '@/components/patterns/page-header';
 import {StatCard} from '@/components/patterns/stat-card';
-import type {Deck} from '@/lib/schema';
+import type {Deck, User} from '@/lib/schema';
 import {formatDate} from '@/lib/utils';
 
 interface WorkspaceClientProps {
   initialDecks: Deck[];
+  user: User;
 }
 
 interface DeckApiBody {
@@ -42,8 +45,10 @@ async function readDeckApiBody(response: Response): Promise<DeckApiBody> {
 }
 
 /** Renders the signed-in workspace and handles creating and importing decks. */
-export function WorkspaceClient({initialDecks}: WorkspaceClientProps) {
+export function WorkspaceClient({initialDecks, user}: WorkspaceClientProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const view = searchParams.get('view');
   const importInputRef = useRef<HTMLInputElement>(null);
   const [decks, setDecks] = useState(initialDecks);
   const [creating, setCreating] = useState(false);
@@ -120,6 +125,18 @@ export function WorkspaceClient({initialDecks}: WorkspaceClientProps) {
       void importDeck(file);
     }
     event.target.value = '';
+  }
+
+  if (view === 'live') {
+    return <WorkspaceLiveView onOpenDecks={() => router.push('/workspace')} />;
+  }
+
+  if (view === 'settings') {
+    return <WorkspaceSettingsView onOpenDecks={() => router.push('/workspace')} />;
+  }
+
+  if (view === 'profile') {
+    return <WorkspaceProfileView deckCount={decks.length} user={user} />;
   }
 
   return (
@@ -226,6 +243,41 @@ export function WorkspaceClient({initialDecks}: WorkspaceClientProps) {
       </section>
     </div>
   );
+}
+
+function WorkspaceProfileView({deckCount, user}: {deckCount: number; user: User}) {
+  const router = useRouter();
+  const [signingOut, setSigningOut] = useState(false);
+
+  async function signOut() {
+    setSigningOut(true);
+    await fetch('/api/auth/logout', {method: 'POST'});
+    router.push('/');
+    router.refresh();
+  }
+
+  return <div className="mx-auto max-w-3xl">
+    <PageHeader eyebrow="Profile" title={user.name} description={user.email} />
+    <section className="cue-panel mt-12 grid gap-5 p-7 sm:grid-cols-2 sm:p-8"><div><p className="cue-caption">Current plan</p><p className="mt-2 text-xl font-semibold capitalize">{user.plan}</p></div><div><p className="cue-caption">Decks created</p><p className="mt-2 text-xl font-semibold">{deckCount}</p></div></section>
+    <section className="mt-8 flex items-center justify-between rounded-2xl border border-white/[.08] bg-white/[.02] p-5"><div><h2 className="text-sm font-semibold">Sign out of Deckactive</h2><p className="cue-body-sm mt-1">This signs you out on this browser.</p></div><Button loading={signingOut} onClick={signOut} variant="secondary"><LogOut className="size-4" />Sign out</Button></section>
+  </div>;
+}
+
+function WorkspaceLiveView({onOpenDecks}: {onOpenDecks: () => void}) {
+  return <div className="mx-auto max-w-5xl">
+    <PageHeader className="max-w-3xl" eyebrow="Live sessions" title="Every room, ready to run." description="Live sessions begin from a deck. Start one when your slides and audience moments are ready." />
+    <EmptyState className="mt-14" description="Choose a deck, then start a live session to get a join link, QR code and remote controls." icon={Radio} title="No live sessions yet" action={<Button onClick={onOpenDecks} variant="primary"><ImageIcon className="size-4" />Open decks</Button>} />
+  </div>;
+}
+
+function WorkspaceSettingsView({onOpenDecks}: {onOpenDecks: () => void}) {
+  return <div className="mx-auto max-w-5xl">
+    <div className="flex items-start justify-between gap-6"><PageHeader className="max-w-3xl" eyebrow="Workspace settings" title="Keep the room on-brand." description="Your audience experience is configured inside each deck, so settings stay attached to the presentation they affect." /><Button asChild size="sm" variant="secondary"><Link href="/home">View website</Link></Button></div>
+    <section className="cue-panel mt-12 grid gap-6 p-7 md:grid-cols-[1fr_auto] md:items-center md:p-8">
+      <div><h2 className="cue-h3">Deck-level controls</h2><p className="cue-body-sm mt-2 max-w-xl">Set a waiting message, available keepsake styles and your session experience from any deck’s Settings panel.</p></div>
+      <Button onClick={onOpenDecks} variant="primary"><Settings className="size-4" />Open decks</Button>
+    </section>
+  </div>;
 }
 
 function DeckPreview() {

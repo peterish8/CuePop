@@ -13,7 +13,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ code
     const response = token
       ? jsonOk(await client.query(api.live.hostRoom, { code: code.toUpperCase(), token }))
       : remoteToken
-        ? jsonError("Phone controls need to be reconnected.", 409)
+        ? jsonOk(await client.query(api.live.remoteRoom, { code: code.toUpperCase(), token: remoteToken }))
         : (() => jsonError("Use the realtime room connection.", 409))();
     response.headers.set("Cache-Control", "no-store");
     return response;

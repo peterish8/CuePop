@@ -26,6 +26,7 @@ export default defineSchema({
     code: v.string(),
     controllerToken: v.string(),
     remoteToken: v.optional(v.string()),
+    remotePasswordHash: v.optional(v.string()),
     deckTitle: v.string(),
     waitingMessage: v.string(),
     keepsakeThemes: v.array(v.string()),

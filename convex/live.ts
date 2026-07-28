@@ -1,4 +1,5 @@
 import { ConvexError, v } from "convex/values";
+import bcrypt from "bcryptjs";
 import { mutation, query } from "./_generated/server";
 
 const roomCode = v.string();
@@ -84,7 +85,38 @@ export const hostRoom = query({
   handler: async (ctx, args) => {
     const session = await sessionForCode(ctx, args.code);
     if (!session || session.controllerToken !== args.token) throw new ConvexError("Presenter access is required.");
-    return { snapshot: await roomSnapshot(ctx, session), items: session.items, remotePasswordSet: false };
+    return { snapshot: await roomSnapshot(ctx, session), items: session.items, remotePasswordSet: Boolean(session.remotePasswordHash) };
+  },
+});
+
+export const remoteRoom = query({
+  args: { code: roomCode, token: v.string() }, returns: v.any(),
+  handler: async (ctx, args) => {
+    const session = await sessionForCode(ctx, args.code);
+    if (!session || session.remoteToken !== args.token) throw new ConvexError("Phone control access is invalid.");
+    return { snapshot: await roomSnapshot(ctx, session), items: session.items, remotePasswordSet: Boolean(session.remotePasswordHash) };
+  },
+});
+
+export const setRemotePassword = mutation({
+  args: { code: roomCode, token: v.string(), password: v.string() }, returns: v.object({ enabled: v.boolean() }),
+  handler: async (ctx, args) => {
+    const session = await sessionForCode(ctx, args.code);
+    if (!session || session.controllerToken !== args.token) throw new ConvexError("Presenter access is required.");
+    if (args.password.trim().length < 4 || args.password.length > 100) throw new ConvexError("Use a password between 4 and 100 characters.");
+    await ctx.db.patch(session._id, { remotePasswordHash: await bcrypt.hash(args.password, 12), remoteToken: undefined });
+    return { enabled: true };
+  },
+});
+
+export const unlockRemote = mutation({
+  args: { code: roomCode, password: v.string() }, returns: v.object({ remoteToken: v.string() }),
+  handler: async (ctx, args) => {
+    const session = await sessionForCode(ctx, args.code);
+    if (!session?.remotePasswordHash || !(await bcrypt.compare(args.password, session.remotePasswordHash))) throw new ConvexError("That phone control password is not correct.");
+    const remoteToken = crypto.randomUUID().replaceAll("-", "") + crypto.randomUUID().replaceAll("-", "");
+    await ctx.db.patch(session._id, { remoteToken });
+    return { remoteToken };
   },
 });
 

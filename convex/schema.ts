@@ -19,9 +19,24 @@ const item = v.object({
   question: v.union(v.string(), v.null()),
   options: v.array(option),
   notes: v.union(v.string(), v.null()),
+  revealMode: v.optional(v.union(v.literal("manual"), v.literal("auto"))),
+});
+
+const deck = v.object({
+  ownerId: v.string(), title: v.string(), description: v.string(), waitingMessage: v.string(),
+  keepsakeThemes: v.array(v.string()), items: v.array(item), createdAt: v.number(), updatedAt: v.number(),
 });
 
 export default defineSchema({
+  users: defineTable({
+    id: v.string(),
+    name: v.string(),
+    email: v.string(),
+    passwordHash: v.optional(v.string()),
+    plan: v.union(v.literal("free"), v.literal("pro")),
+    createdAt: v.number(),
+  }).index("by_email", ["email"]).index("by_userId", ["id"]),
+  decks: defineTable(deck).index("by_ownerId", ["ownerId"]),
   liveSessions: defineTable({
     code: v.string(),
     controllerToken: v.string(),

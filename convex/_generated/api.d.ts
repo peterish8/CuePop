@@ -8,7 +8,10 @@
  * @module
  */
 
+import type * as decks from "../decks.js";
+import type * as files from "../files.js";
 import type * as live from "../live.js";
+import type * as users from "../users.js";
 
 import type {
   ApiFromModules,
@@ -17,7 +20,10 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  decks: typeof decks;
+  files: typeof files;
   live: typeof live;
+  users: typeof users;
 }>;
 
 /**

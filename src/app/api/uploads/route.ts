@@ -1,11 +1,8 @@
-import fs from "node:fs/promises";
-import path from "node:path";
-import { nanoid } from "nanoid";
+import { convexFiles } from "@/lib/convex-files";
 import { requireUser } from "@/lib/auth";
 import { errorResponse, jsonError, jsonOk } from "@/lib/api";
-import { hasValidImageSignature, IMAGE_TYPES, isSupportedImageType } from "@/lib/uploads";
+import { hasValidImageSignature, IMAGE_TYPES, isSupportedImageType } from "@/lib/image-validation";
 
-export const runtime = "nodejs";
 const maxBytes = 10 * 1024 * 1024;
 
 export async function POST(request: Request) {
@@ -23,11 +20,8 @@ export async function POST(request: Request) {
       return jsonError("The file contents do not match the selected image format.", 415);
     }
 
-    const filename = `${Date.now()}-${nanoid(10)}.${IMAGE_TYPES[file.type]}`;
-    const directory = path.join(process.cwd(), "data", "uploads");
-    await fs.mkdir(directory, { recursive: true });
-    await fs.writeFile(path.join(directory, filename), bytes);
-    return jsonOk({ url: `/api/media/${filename}`, filename }, 201);
+    const storageId = await convexFiles.upload(file);
+    return jsonOk({ url: `/api/media/${storageId}`, filename: `${Date.now()}.${IMAGE_TYPES[file.type]}` }, 201);
   } catch (error) {
     return errorResponse(error);
   }

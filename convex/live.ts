@@ -11,6 +11,7 @@ const controllerCommand = v.union(
 
 export const create = mutation({
   args: {
+    serverSecret: v.string(),
     code: roomCode,
     controllerToken: v.string(),
     deckTitle: v.string(),
@@ -25,11 +26,13 @@ export const create = mutation({
   },
   returns: v.object({ code: v.string(), controllerToken: v.string() }),
   handler: async (ctx, args) => {
+    if (!process.env.CONVEX_SERVER_SECRET || args.serverSecret !== process.env.CONVEX_SERVER_SECRET) throw new ConvexError("Server authorization required.");
     if (!args.items.length) throw new ConvexError("Add at least one item before starting a session.");
     const existing = await sessionForCode(ctx, args.code);
     if (existing) throw new ConvexError("That room code is already in use. Start the session again.");
+    const { serverSecret: _serverSecret, ...session } = args;
     await ctx.db.insert("liveSessions", {
-      ...args, code: args.code.trim().toUpperCase(), status: "join", currentItemId: null,
+      ...session, code: args.code.trim().toUpperCase(), status: "join", currentItemId: null,
       joinLocked: false, runVersion: 0, endedAt: null,
     });
     return { code: args.code.trim().toUpperCase(), controllerToken: args.controllerToken };

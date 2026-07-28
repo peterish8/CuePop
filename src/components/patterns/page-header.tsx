@@ -13,7 +13,7 @@ export function PageHeader({ eyebrow, title, description, actions, className, ..
     <div className={cn("flex flex-col justify-between gap-6 lg:flex-row lg:items-end", className)} {...props}>
       <div>
         {eyebrow && <p className="cue-eyebrow">{eyebrow}</p>}
-        <h1 className={cn("cue-h1", eyebrow && "mt-3")}>{title}</h1>
+        <h1 className={cn("cue-h1", eyebrow && "mt-6")}>{title}</h1>
         {description && <p className="cue-body-lg mt-4 max-w-2xl">{description}</p>}
       </div>
       {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}

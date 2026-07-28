@@ -8,11 +8,11 @@
 :root {
   /* ---------- Primitive: neutral scale ---------- */
   --neutral-1000: #050507; /* deepest base — true near-black, matches auth/error/not-found shells */
-  --neutral-950: #060811;
-  --neutral-900: #0a0d12; /* consolidates the ~9 stray "near-black" chrome shades */
-  --neutral-850: #0d1016;
-  --neutral-800: #151a24;
-  --neutral-700: #1c2230;
+  --neutral-950: #080808;
+  --neutral-900: #0d0d0d;
+  --neutral-850: #111111;
+  --neutral-800: #171717;
+  --neutral-700: #242424;
   --neutral-500: #7a7a7a; /* WCAG AA-safe subtle foreground */
   --neutral-400: #a1a1a1;
   --neutral-100: #ededed;
@@ -28,11 +28,11 @@
   --neutral-light-900: #14161a;
 
   /* ---------- Primitive: brand ---------- */
-  --brand-blue-900: #082ea2;
-  --brand-blue-600: #4169e1;
-  --brand-blue-400: #7c9bf0;
-  --brand-violet-900: #422bc1;
-  --brand-violet-600: #7c5cf0;
+  --brand-blue-900: #1d4ed8;
+  --brand-blue-600: #3b82f6;
+  --brand-blue-400: #93c5fd;
+  --brand-violet-900: #1d4ed8;
+  --brand-violet-600: #3b82f6;
 
   /* ---------- Primitive: status ---------- */
   --status-success-500: #6ed7b2;
@@ -70,8 +70,8 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, .35);
   --shadow-lg: 0 24px 60px rgba(0, 0, 0, .5);
-  --shadow-glow-primary: 0 8px 28px rgba(65, 105, 225, .28);
-  --shadow-glow-accent: 0 8px 28px rgba(124, 92, 240, .28);
+  --shadow-glow-primary: 0 10px 28px rgba(59, 130, 246, .18);
+  --shadow-glow-accent: 0 10px 28px rgba(59, 130, 246, .18);
 
   /* ---------- Primitive: typography ---------- */
   --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
@@ -112,14 +112,14 @@
   --color-primary: var(--brand-blue-900);
   --color-primary-hover: var(--brand-blue-600);
   --color-primary-active: #062578;
-  --color-primary-foreground: #061013;
+  --color-primary-foreground: #ffffff;
 
   --color-secondary: rgba(255, 255, 255, .04);
   --color-secondary-hover: rgba(255, 255, 255, .07);
   --color-secondary-foreground: var(--color-foreground);
 
-  --color-accent: var(--brand-violet-900);
-  --color-accent-hover: var(--brand-violet-600);
+  --color-accent: var(--brand-blue-900);
+  --color-accent-hover: var(--brand-blue-600);
   --color-accent-foreground: var(--neutral-0);
 
   --color-success: var(--status-success-500);

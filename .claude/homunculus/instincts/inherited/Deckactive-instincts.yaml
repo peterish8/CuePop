@@ -1,0 +1,354 @@
+# Instincts generated from https://github.com/peterish8/Deckactive
+# Generated: 2026-07-28T19:41:43.157Z
+# Version: 2.0
+# NOTE: This file supplements (does not replace) any existing curated instincts.
+# High-confidence manually curated instincts should be preserved alongside these.
+
+---
+id: Deckactive-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/peterish8/Deckactive
+---
+
+# Deckactive Commit Length
+
+## Action
+
+Keep commit messages concise (~43 characters)
+
+## Evidence
+
+- Average commit message length: 43 chars
+- Based on 2 commits
+
+---
+id: Deckactive-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/peterish8/Deckactive
+---
+
+# Deckactive Naming Files
+
+## Action
+
+Use kebab-case naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: kebab-case
+
+---
+id: Deckactive-import-alias
+trigger: "when importing modules"
+confidence: 0.85
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/peterish8/Deckactive
+---
+
+# Deckactive Import Alias
+
+## Action
+
+Use path aliases (@/, ~/) instead of relative imports
+
+## Evidence
+
+- Import analysis shows alias pattern
+- Example: import { x } from '@/lib/x'
+
+---
+id: Deckactive-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/peterish8/Deckactive
+---
+
+# Deckactive Export Style
+
+## Action
+
+Prefer named exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: named
+
+---
+id: Deckactive-arch-type-based
+trigger: "when adding new code"
+confidence: 0.8
+domain: architecture
+source: repo-analysis
+source_repo: https://github.com/peterish8/Deckactive
+---
+
+# Deckactive Arch Type Based
+
+## Action
+
+Place code in the appropriate type folder (components/, services/, utils/, etc.)
+
+## Evidence
+
+- Type-based module organization detected
+- Folders: app, components
+
+---
+id: Deckactive-test-separate
+trigger: "when writing tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/peterish8/Deckactive
+---
+
+# Deckactive Test Separate
+
+## Action
+
+Place tests in the tests/ or __tests__/ directory, mirroring src structure
+
+## Evidence
+
+- Separate test directory pattern detected
+- Tests live in dedicated test folders
+
+---
+id: deckactive-instinct-file-naming
+trigger: "When creating a new file"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: peterish8/Deckactive
+---
+
+# Deckactive Instinct File Naming
+
+## Action
+
+Name the file using kebab-case
+
+## Evidence
+
+- Pattern in codeStyle.namingConventions.files
+
+---
+id: deckactive-instinct-function-naming
+trigger: "When defining a function"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: peterish8/Deckactive
+---
+
+# Deckactive Instinct Function Naming
+
+## Action
+
+Name the function using camelCase
+
+## Evidence
+
+- Pattern in codeStyle.namingConventions.functions
+
+---
+id: deckactive-instinct-class-naming
+trigger: "When defining a class"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: peterish8/Deckactive
+---
+
+# Deckactive Instinct Class Naming
+
+## Action
+
+Name the class using PascalCase
+
+## Evidence
+
+- Pattern in codeStyle.namingConventions.classes
+
+---
+id: deckactive-instinct-constant-naming
+trigger: "When declaring a constant"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: peterish8/Deckactive
+---
+
+# Deckactive Instinct Constant Naming
+
+## Action
+
+Name the constant using SCREAMING_SNAKE_CASE
+
+## Evidence
+
+- Pattern in codeStyle.namingConventions.constants
+
+---
+id: deckactive-instinct-import-style
+trigger: "When importing modules"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: peterish8/Deckactive
+---
+
+# Deckactive Instinct Import Style
+
+## Action
+
+Use alias import style
+
+## Evidence
+
+- Pattern in codeStyle.importStyle
+
+---
+id: deckactive-instinct-export-style
+trigger: "When exporting modules or functions"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: peterish8/Deckactive
+---
+
+# Deckactive Instinct Export Style
+
+## Action
+
+Use named exports
+
+## Evidence
+
+- Pattern in codeStyle.exportStyle
+
+---
+id: deckactive-instinct-commit-prefix-checkpoint
+trigger: "When making a commit that saves work in progress or a state snapshot"
+confidence: 0.9
+domain: git
+source: repo-analysis
+source_repo: peterish8/Deckactive
+---
+
+# Deckactive Instinct Commit Prefix Checkpoint
+
+## Action
+
+Prefix the commit message with 'checkpoint:'
+
+## Evidence
+
+- Seen in commit 'checkpoint: preserve pre smart realtime state'
+
+---
+id: deckactive-instinct-commit-prefix-fix
+trigger: "When making a commit that fixes a bug or issue"
+confidence: 0.9
+domain: git
+source: repo-analysis
+source_repo: peterish8/Deckactive
+---
+
+# Deckactive Instinct Commit Prefix Fix
+
+## Action
+
+Prefix the commit message with 'fix:'
+
+## Evidence
+
+- Seen in commit 'fix: allow env-free production prerender'
+
+---
+id: deckactive-instinct-commit-length
+trigger: "When writing a commit message"
+confidence: 0.7
+domain: git
+source: repo-analysis
+source_repo: peterish8/Deckactive
+---
+
+# Deckactive Instinct Commit Length
+
+## Action
+
+Keep the message concise, around 43 characters on average
+
+## Evidence
+
+- Pattern in commits.averageLength
+
+---
+id: deckactive-instinct-error-handling-try-catch
+trigger: "When handling errors in code"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: peterish8/Deckactive
+---
+
+# Deckactive Instinct Error Handling Try Catch
+
+## Action
+
+Use try-catch blocks for error handling
+
+## Evidence
+
+- Pattern in errorHandling.style
+
+---
+id: deckactive-instinct-test-location
+trigger: "When adding or updating tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: peterish8/Deckactive
+---
+
+# Deckactive Instinct Test Location
+
+## Action
+
+Place tests in a separate folder from source code
+
+## Evidence
+
+- Pattern in architecture.folderStructure.testLocation
+
+---
+id: deckactive-instinct-src-layout
+trigger: "When organizing source files"
+confidence: 0.8
+domain: architecture
+source: repo-analysis
+source_repo: peterish8/Deckactive
+---
+
+# Deckactive Instinct Src Layout
+
+## Action
+
+Use 'app' and 'components' folders inside 'src'
+
+## Evidence
+
+- Pattern in architecture.folderStructure.srcLayout
+

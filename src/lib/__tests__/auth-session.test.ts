@@ -12,7 +12,7 @@ describe("signed host sessions", () => {
 
   it("rejects a changed or expired session", () => {
     const token = createSessionToken(user);
-    expect(readSessionToken(`${token.slice(0, -1)}x`)).toBeNull();
+    expect(readSessionToken(`${token}tampered`)).toBeNull();
     expect(readSessionToken(createSessionToken(user, Date.now() - 1))).toBeNull();
   });
 });

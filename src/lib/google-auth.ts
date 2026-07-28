@@ -72,10 +72,11 @@ export async function finishGoogleSignIn(request: Request) {
     cache: "no-store",
   });
   if (!profileResponse.ok) throw new Error("Google could not load your account details.");
-  const profile = await profileResponse.json() as { email?: string; email_verified?: boolean; name?: string; given_name?: string };
-  if (!profile.email || profile.email_verified !== true) throw new Error("Please choose a Google account with a verified email address.");
+  const profile = await profileResponse.json() as { sub?: string; email?: string; email_verified?: boolean; name?: string; given_name?: string };
+  if (!profile.sub || !profile.email || profile.email_verified !== true) throw new Error("Please choose a Google account with a verified email address.");
 
   return {
+    subject: profile.sub,
     email: profile.email.toLowerCase(),
     name: (profile.name || profile.given_name || profile.email.split("@")[0]).trim().slice(0, 80),
   };

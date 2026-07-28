@@ -9,6 +9,7 @@ import { safeJsonParse } from "@/lib/utils";
 let db: Database.Database | undefined;
 
 function databasePath() {
+  if (process.env.VERCEL) return "/tmp/cuepop.db";
   return process.env.DATABASE_PATH || path.join(process.cwd(), "data", "cuepop.db");
 }
 

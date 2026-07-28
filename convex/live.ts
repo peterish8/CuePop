@@ -78,6 +78,16 @@ export const room = query({
   },
 });
 
+export const hostRoom = query({
+  args: { code: roomCode, token: v.string() },
+  returns: v.any(),
+  handler: async (ctx, args) => {
+    const session = await sessionForCode(ctx, args.code);
+    if (!session || session.controllerToken !== args.token) throw new ConvexError("Presenter access is required.");
+    return { snapshot: await roomSnapshot(ctx, session), items: session.items, remotePasswordSet: false };
+  },
+});
+
 export const report = query({
   args: { code: roomCode, token: v.string() }, returns: v.any(),
   handler: async (ctx, args) => {

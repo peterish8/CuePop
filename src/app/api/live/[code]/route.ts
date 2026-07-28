@@ -1,19 +1,20 @@
+import { ConvexHttpClient } from "convex/browser";
 import { jsonError, jsonOk } from "@/lib/api";
-import { getHostRoom, getRemoteRoom, getRoomSnapshot } from "@/lib/live/service";
+import { api } from "../../../../../convex/_generated/api";
 
 export async function GET(request: Request, { params }: { params: Promise<{ code: string }> }) {
   const { code } = await params;
   const token = new URL(request.url).searchParams.get("token");
   const remoteToken = new URL(request.url).searchParams.get("remoteToken");
   try {
+    const url = process.env.NEXT_PUBLIC_CONVEX_URL;
+    if (!url) throw new Error("Live backend is not configured.");
+    const client = new ConvexHttpClient(url);
     const response = token
-      ? jsonOk(getHostRoom(code.toUpperCase(), token))
+      ? jsonOk(await client.query(api.live.hostRoom, { code: code.toUpperCase(), token }))
       : remoteToken
-        ? jsonOk(getRemoteRoom(code.toUpperCase(), remoteToken))
-      : (() => {
-          const snapshot = getRoomSnapshot(code.toUpperCase());
-          return snapshot ? jsonOk(snapshot) : jsonError("Room not found.", 404);
-        })();
+        ? jsonError("Phone controls need to be reconnected.", 409)
+        : (() => jsonError("Use the realtime room connection.", 409))();
     response.headers.set("Cache-Control", "no-store");
     return response;
   } catch (error) {

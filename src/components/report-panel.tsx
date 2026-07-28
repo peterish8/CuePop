@@ -19,6 +19,7 @@ type Report = {
     participationRate: number;
     options: { label: string; count: number; isCorrect?: boolean }[];
   }[];
+  answers: { attendeeName: string; itemId: string; answer: string; answeredAt: number }[];
 };
 
 export function ReportPanel({ code, token }: { code: string; token: string }) {
@@ -57,6 +58,14 @@ export function ReportPanel({ code, token }: { code: string; token: string }) {
     link.download = `cuepop-${code}-report.csv`;
     link.click();
     setTimeout(() => URL.revokeObjectURL(objectUrl), 0);
+  }
+
+  function exportStudentAnswers() {
+    if (!report) return;
+    const questionById = new Map(report.moments.map((moment) => [moment.itemId, moment.question]));
+    const rows = [["Student", "Question", "Answer", "Answered at"], ...report.answers.map((answer) => [answer.attendeeName, questionById.get(answer.itemId) || answer.itemId, answer.answer, new Date(answer.answeredAt).toISOString()])];
+    const csv = rows.map((row) => row.map((cell) => `"${cell.replaceAll('"', '""')}"`).join(",")).join("\n");
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" })); const link = document.createElement("a"); link.href = url; link.download = `cuepop-${code}-student-answers.csv`; link.click(); setTimeout(() => URL.revokeObjectURL(url), 0);
   }
 
   if (error) return <div className="text-sm text-[var(--color-danger)]">{error}</div>;
@@ -120,6 +129,9 @@ export function ReportPanel({ code, token }: { code: string; token: string }) {
       <Button className="mt-5 w-full" variant="secondary" onClick={exportCsv}>
         <Download className="size-4" />
         Export CSV
+      </Button>
+      <Button className="mt-2 w-full" variant="secondary" onClick={exportStudentAnswers}>
+        <Download className="size-4" />Export student answers
       </Button>
     </div>
   );

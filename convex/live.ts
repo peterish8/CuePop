@@ -78,6 +78,22 @@ export const room = query({
   },
 });
 
+export const report = query({
+  args: { code: roomCode, token: v.string() }, returns: v.any(),
+  handler: async (ctx, args) => {
+    const session = await sessionForCode(ctx, args.code);
+    if (!session || session.controllerToken !== args.token) throw new ConvexError("Presenter access is required.");
+    const attendees = await ctx.db.query("attendees").withIndex("by_session", (q) => q.eq("sessionId", session._id)).take(600);
+    const responses = await ctx.db.query("responses").withIndex("by_session_and_item", (q) => q.eq("sessionId", session._id)).take(600);
+    const attendeeById = new Map(attendees.map((attendee) => [attendee._id, attendee]));
+    const moments = session.items.filter((item: any) => item.type !== "slide").map((item: any) => {
+      const itemResponses = responses.filter((response) => response.itemId === item.id && response.runVersion === session.runVersion);
+      return { itemId: item.id, type: item.type, question: item.question || "", totalResponses: itemResponses.length, participationRate: attendees.length ? Math.round((itemResponses.length / attendees.length) * 100) : 0, options: item.options.map((option: any) => ({ label: option.label, count: itemResponses.filter((response) => response.optionId === option.id).length, ...(item.type === "quiz" ? { isCorrect: option.isCorrect === true } : {}) })) };
+    });
+    return { code: session.code, deckTitle: session.deckTitle, attendeeCount: attendees.length, startedAt: session._creationTime, endedAt: session.endedAt, moments, answers: responses.filter((response) => response.runVersion === session.runVersion).map((response) => ({ attendeeName: attendeeById.get(response.attendeeId)?.name || "Anonymous attendee", itemId: response.itemId, answer: session.items.find((item: any) => item.id === response.itemId)?.options.find((option: any) => option.id === response.optionId)?.label || response.optionId, answeredAt: response.createdAt })) };
+  },
+});
+
 export const join = mutation({
   args: { code: roomCode, deviceId: v.string(), name: v.optional(v.string()) },
   returns: v.any(),

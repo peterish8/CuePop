@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowUpRight, CalendarDays, ImageIcon, MoreHorizontal, Plus, Radio, Sparkles } from "lucide-react";
+import { ArrowUpRight, CalendarDays, ImageIcon, MoreHorizontal, Plus, Radio, Sparkles, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toaster";
@@ -13,14 +13,15 @@ import type { Deck } from "@/lib/schema";
 import { formatDate } from "@/lib/utils";
 
 export function WorkspaceClient({ initialDecks }: { initialDecks: Deck[] }) {
- const router=useRouter(); const [decks,setDecks]=useState(initialDecks); const [creating,setCreating]=useState(false); const [title,setTitle]=useState("");
+ const router=useRouter(); const [decks,setDecks]=useState(initialDecks); const [creating,setCreating]=useState(false); const [importing,setImporting]=useState(false); const [title,setTitle]=useState("");
  async function createDeck(e:React.FormEvent){ e.preventDefault(); if(!title.trim())return; setCreating(true); const res=await fetch("/api/decks",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({title})}); const body=await res.json(); setCreating(false); if(!res.ok){toast({title:"Could not create deck",description:body.error,tone:"error"});return;} setDecks([body.data,...decks]); setTitle(""); router.push(`/workspace/decks/${body.data.id}`); }
+ async function importDeck(file:File){setImporting(true);try{const res=await fetch("/api/decks/import",{method:"POST",headers:{"content-type":"application/json"},body:await file.text()});const body=await res.json();if(!res.ok)throw new Error(body.error||"Import failed");toast({title:"Deck imported",description:"A fresh copy is ready in this workspace."});router.push(`/workspace/decks/${body.data.id}`)}catch(error){toast({title:"Could not import deck",description:error instanceof Error?error.message:"Choose a CuePop export.",tone:"error"})}finally{setImporting(false)}}
  return <div className="mx-auto max-w-7xl">
   <PageHeader
    eyebrow="Your presentation workspace"
    title="Build once. Run the room."
    description="Upload image slides, place audience moments exactly where they belong and rehearse all four live surfaces before the event."
-   actions={<form onSubmit={createDeck} className="flex w-full max-w-md gap-2"><Input value={title} onChange={(e)=>setTitle(e.target.value)} placeholder="New deck title"/><Button variant="primary" loading={creating} disabled={!title.trim()}><Plus className="size-4"/>Create deck</Button></form>}
+   actions={<div className="flex w-full max-w-lg gap-2"><form onSubmit={createDeck} className="flex min-w-0 flex-1 gap-2"><Input value={title} onChange={(e)=>setTitle(e.target.value)} placeholder="New deck title"/><Button variant="primary" loading={creating} disabled={!title.trim()}><Plus className="size-4"/>Create</Button></form><label><input className="sr-only" type="file" accept="application/json,.json,.cuepop.json" onChange={(e)=>{const file=e.target.files?.[0];if(file)void importDeck(file);e.currentTarget.value=""}}/><Button type="button" variant="secondary" loading={importing} onClick={(e)=>e.currentTarget.parentElement?.querySelector("input")?.click()}><Upload className="size-4"/>Import</Button></label></div>}
   />
   <div className="mt-10 grid gap-4 sm:grid-cols-3"><StatCard icon={ImageIcon} value={decks.length} label="Decks"/><StatCard icon={Radio} value="Ready" label="Realtime room"/><StatCard icon={Sparkles} value="3" label="Keepsake designs"/></div>
   <section className="mt-12"><div className="flex items-center justify-between"><div><h2 className="cue-h3">Recent decks</h2><p className="cue-body-sm mt-1">Continue editing or start a live rehearsal.</p></div></div>

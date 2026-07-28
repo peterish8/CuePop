@@ -142,7 +142,7 @@
     transition: background-color .15s var(--ease), border-color .15s var(--ease), color .15s var(--ease), opacity .15s var(--ease), transform .18s var(--ease-out), box-shadow .2s var(--ease);
   }
   .cue-btn:active { transform: scale(.96); transition-duration: .035s; }
-  .cue-btn:disabled { transform: none !important; }
+  .cue-btn:disabled { transform: none; }
 
   /* Overlay + dialog + sheet enter/exit — keyed off Radix's data-state, no plugin needed.
      `forwards` on both states means the resting transform always matches, animation or not. */
@@ -218,15 +218,15 @@
 .cue-landing #product .cue-hover-card { min-height: 0; padding: 2rem 1.5rem 0; background: transparent; border: 0; box-shadow: none; }
 
 /* Product workflow: an open editorial checklist, never a presentation-style panel. */
-.cue-landing #product .cue-panel { padding: .25rem 0 .25rem 2rem !important; border: 0 !important; border-left: 1px solid rgba(255,255,255,.18) !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; backdrop-filter: none !important; overflow: visible; }
-.cue-landing #product .cue-panel::before, .cue-landing #product .cue-panel::after { display: none !important; }
+  .cue-landing #product .cue-panel { padding: .25rem 0 .25rem 2rem; border: 0; border-left: 1px solid rgba(255,255,255,.18); border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; overflow: visible; }
+  .cue-landing #product .cue-panel::before, .cue-landing #product .cue-panel::after { display: none; }
 .cue-landing #product .cue-panel .space-y-5 { display: grid; gap: 0; }
 .cue-landing #product .cue-panel .space-y-5 > div { min-height: 54px; align-items: center; padding: .75rem 0; border-bottom: 1px solid rgba(255,255,255,.1); color: rgba(255,255,255,.78); }
 .cue-landing #product .cue-panel .space-y-5 > div:last-child { border-bottom: 0; }
 .cue-landing #product .cue-panel .space-y-5 svg { width: 18px; height: 18px; padding: 2px; border: 1px solid rgba(78,216,255,.45); border-radius: 999px; }
 
 .cue-landing #how > .cue-container { display: grid; grid-template-columns: minmax(340px,.82fr) minmax(440px,1.18fr); align-items: center; gap: clamp(3.5rem,7vw,8rem); }
-.cue-landing #how > .cue-container > .mt-14 { margin-top: 0; display: grid; grid-template-columns: 1fr !important; gap: 0; border-left: 1px solid rgba(255,255,255,.14); }
+  .cue-landing #how > .cue-container > .mt-14 { margin-top: 0; display: grid; grid-template-columns: 1fr; gap: 0; border-left: 1px solid rgba(255,255,255,.14); }
 .cue-landing #how .cue-hover-card { min-height: 0; display: grid; grid-template-columns: 3.5rem minmax(0,1fr); column-gap: 1.25rem; padding: 1.75rem 1rem 1.75rem 2rem; border: 0; border-bottom: 1px solid rgba(255,255,255,.11); border-radius: 0; background: linear-gradient(90deg, rgba(65,105,225,.11), transparent 72%); box-shadow: none; }
 .cue-landing #how .cue-hover-card .cue-hover-icon { grid-row: span 2; }
 .cue-landing #how .cue-hover-card h3 { margin-top: .25rem; }
@@ -281,7 +281,7 @@
   .cue-landing #how + section > .cue-container > .mt-12, .cue-landing #use-cases .cue-container > .mt-14 { grid-template-columns: 1fr; }
   .cue-landing #how + section .cue-container > .mt-12 > div:nth-child(2) { transform: none; }
   .cue-landing #keepsake + section .cue-container > .mt-12 { grid-template-columns: 1fr; grid-template-rows: none; gap: 0; }
-  .cue-landing #keepsake + section .cue-container > .mt-12 > div { grid-area: auto !important; }
+  .cue-landing #keepsake + section .cue-container > .mt-12 > div { grid-area: auto; }
   .cue-landing #product > .cue-container > .mt-14 > div + div { border-left: 0; border-top: 1px solid rgba(255,255,255,.12); }
 }
 

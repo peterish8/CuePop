@@ -132,6 +132,7 @@ export function WorkspaceClient({initialDecks}: WorkspaceClientProps) {
           <div className="flex w-full max-w-lg gap-2">
             <form className="flex min-w-0 flex-1 gap-2" onSubmit={createDeck}>
               <Input
+                aria-label="New deck title"
                 disabled={creating}
                 onChange={(event) => setTitle(event.target.value)}
                 placeholder="New deck title"
@@ -144,6 +145,7 @@ export function WorkspaceClient({initialDecks}: WorkspaceClientProps) {
             </form>
             <input
               accept="application/json,.json,.deckactive.json,.cuepop.json"
+              aria-label="Import a Deckactive deck file"
               className="sr-only"
               onChange={handleImportChange}
               ref={importInputRef}

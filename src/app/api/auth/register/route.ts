@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     if (repo.findUserByEmail(parsed.data.email)) return jsonError("An account already exists for this email.", 409);
     const passwordHash = await hashPassword(parsed.data.password);
     const user = repo.createUser({ ...parsed.data, passwordHash });
-    await createLoginSession(user.id);
+    await createLoginSession(user);
     return jsonOk(user, 201);
   } catch (error) { return errorResponse(error); }
 }

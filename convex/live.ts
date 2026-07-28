@@ -8,6 +8,33 @@ const controllerCommand = v.union(
   v.literal("lockJoin"), v.literal("unlockJoin"),
 );
 
+export const create = mutation({
+  args: {
+    code: roomCode,
+    controllerToken: v.string(),
+    deckTitle: v.string(),
+    waitingMessage: v.string(),
+    keepsakeThemes: v.array(v.string()),
+    items: v.array(v.object({
+      id: v.string(), position: v.number(), type: v.union(v.literal("slide"), v.literal("poll"), v.literal("quiz")),
+      title: v.string(), imageUrl: v.union(v.string(), v.null()), backgroundImageUrl: v.union(v.string(), v.null()),
+      backgroundBlur: v.number(), backgroundIntensity: v.number(), question: v.union(v.string(), v.null()),
+      options: v.array(v.object({ id: v.string(), label: v.string(), isCorrect: v.optional(v.boolean()) })), notes: v.union(v.string(), v.null()),
+    })),
+  },
+  returns: v.object({ code: v.string(), controllerToken: v.string() }),
+  handler: async (ctx, args) => {
+    if (!args.items.length) throw new ConvexError("Add at least one item before starting a session.");
+    const existing = await sessionForCode(ctx, args.code);
+    if (existing) throw new ConvexError("That room code is already in use. Start the session again.");
+    await ctx.db.insert("liveSessions", {
+      ...args, code: args.code.trim().toUpperCase(), status: "join", currentItemId: null,
+      joinLocked: false, runVersion: 0, endedAt: null,
+    });
+    return { code: args.code.trim().toUpperCase(), controllerToken: args.controllerToken };
+  },
+});
+
 async function sessionForCode(ctx: { db: any }, code: string) {
   return await ctx.db.query("liveSessions").withIndex("by_code", (q: any) => q.eq("code", code.trim().toUpperCase())).unique();
 }

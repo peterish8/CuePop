@@ -7,6 +7,7 @@ import type { Deck, DeckItem, KeepsakeTheme, PollOption, User } from "@/lib/sche
 import { safeJsonParse } from "@/lib/utils";
 
 let db: Database.Database | undefined;
+let databaseInitialized = false;
 
 function databasePath() {
   if (process.env.VERCEL) return "/tmp/cuepop.db";
@@ -21,12 +22,17 @@ export function getDb() {
     db.pragma("journal_mode = WAL");
     db.pragma("foreign_keys = ON");
   }
+  if (!databaseInitialized) {
+    databaseInitialized = true;
+    initializeDatabase();
+  }
   return db;
 }
 
 export function closeDatabase() {
   db?.close();
   db = undefined;
+  databaseInitialized = false;
 }
 
 export function resetDbForTests(targetPath: string) {
@@ -121,7 +127,7 @@ export function initializeDatabase() {
   ensureColumn(database, "live_sessions", "run_version", "run_version INTEGER NOT NULL DEFAULT 0");
 
   seedDemo(database);
-  fs.mkdirSync(path.join(process.cwd(), "data", "uploads"), { recursive: true });
+  fs.mkdirSync(process.env.VERCEL ? "/tmp/uploads" : path.join(process.cwd(), "data", "uploads"), { recursive: true });
 }
 
 function ensureColumn(database: Database.Database, table: string, column: string, definition: string) {

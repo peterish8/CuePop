@@ -1,47 +1,29 @@
 "use client";
-import { useEffect, useState } from "react";
-import type { Socket } from "socket.io-client";
-import { getSocket } from "@/lib/live/socket-client";
+import { useMemo } from "react";
+import { useConvexConnectionState, useMutation, useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import type { RoomSnapshot } from "@/lib/live/types";
 
+type Ack = (result: { ok: true; data: unknown } | { ok: false; error: string }) => void;
+
 export function useRoom(code: string) {
-  const [snapshot, setSnapshot] = useState<RoomSnapshot | null>(null);
-  const [connected, setConnected] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [socket, setSocket] = useState<Socket | null>(null);
+  const room = useQuery(api.live.room, { code: code.toUpperCase() });
+  const join = useMutation(api.live.join);
+  const vote = useMutation(api.live.vote);
+  const command = useMutation(api.live.command);
+  const connection = useConvexConnectionState();
+  const socket = useMemo(() => ({
+    emit(event: string, payload: Record<string, unknown>, ack?: Ack) {
+      const operation = event === "attendee:join" ? join(payload as never)
+        : event === "attendee:vote" ? vote(payload as never)
+          : event === "host:command" ? command(payload as never)
+            : Promise.resolve(null);
+      void operation.then((data) => ack?.({ ok: true, data })).catch((error: unknown) => ack?.({ ok: false, error: error instanceof Error ? error.message : "Could not complete this live action." }));
+    },
+    on(..._args: unknown[]) {},
+    off(..._args: unknown[]) {},
+  }), [command, join, vote]);
 
-  useEffect(() => {
-    const normalizedCode = code.toUpperCase();
-    const client = getSocket();
-    setSocket(client);
-
-    const onSnapshot = (next: RoomSnapshot) => {
-      if (next.code === normalizedCode) setSnapshot(next);
-    };
-    const subscribe = () => {
-      setConnected(true);
-      setError(null);
-      client.emit("room:subscribe", { code: normalizedCode }, (ack: any) => {
-        if (!ack?.ok) setError(ack?.error || "Could not join room.");
-      });
-    };
-    const onDisconnect = () => setConnected(false);
-    const onConnectError = () => setError("The realtime connection could not be established.");
-
-    client.on("room:snapshot", onSnapshot);
-    client.on("connect", subscribe);
-    client.on("disconnect", onDisconnect);
-    client.on("connect_error", onConnectError);
-    if (client.connected) subscribe();
-
-    return () => {
-      client.emit("room:unsubscribe", { code: normalizedCode });
-      client.off("room:snapshot", onSnapshot);
-      client.off("connect", subscribe);
-      client.off("disconnect", onDisconnect);
-      client.off("connect_error", onConnectError);
-    };
-  }, [code]);
-
-  return { snapshot, connected, error, socket };
+  const snapshot = room === undefined ? null : room as RoomSnapshot | null;
+  return { snapshot, connected: connection.isWebSocketConnected, error: room === null ? "Room unavailable" : null, socket };
 }

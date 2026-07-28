@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Bricolage_Grotesque, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { ConvexClientProvider } from "@/components/convex-client-provider";
 import { cn } from "@/lib/utils";
 
 const display = Bricolage_Grotesque({ subsets: ["latin"], weight: "variable", variable: "--font-display", display: "swap" });
@@ -19,8 +20,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={cn("dark", display.variable, body.variable)}>
       <body>
-        {children}
-        <Toaster />
+        <ConvexClientProvider>
+          {children}
+          <Toaster />
+        </ConvexClientProvider>
       </body>
     </html>
   );

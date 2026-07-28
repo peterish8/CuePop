@@ -27,6 +27,9 @@ export const deckItemCreateSchema = z.object({
   type: z.enum(["slide", "poll", "quiz"]),
   title: z.string().trim().min(1).max(120),
   imageUrl: localImageUrl.nullable().optional(),
+  backgroundImageUrl: localImageUrl.nullable().optional(),
+  backgroundBlur: z.number().int().min(0).max(24).optional(),
+  backgroundIntensity: z.number().int().min(0).max(100).optional(),
   question: z.string().trim().max(240).nullable().optional(),
   options: optionListSchema.optional(),
   notes: z.string().trim().max(500).nullable().optional(),
@@ -37,6 +40,9 @@ export const deckItemPatchSchema = z
   .object({
     title: z.string().trim().min(1).max(120).optional(),
     imageUrl: localImageUrl.nullable().optional(),
+    backgroundImageUrl: localImageUrl.nullable().optional(),
+    backgroundBlur: z.number().int().min(0).max(24).optional(),
+    backgroundIntensity: z.number().int().min(0).max(100).optional(),
     question: z.string().trim().max(240).nullable().optional(),
     options: optionListSchema.optional(),
     notes: z.string().trim().max(500).nullable().optional(),
@@ -73,6 +79,9 @@ export function mergedDeckItemState(current: DeckItem, patch: Partial<DeckItem>)
   return {
     type: current.type,
     imageUrl: patch.imageUrl === undefined ? current.imageUrl : patch.imageUrl,
+    backgroundImageUrl: patch.backgroundImageUrl === undefined ? current.backgroundImageUrl : patch.backgroundImageUrl,
+    backgroundBlur: patch.backgroundBlur === undefined ? current.backgroundBlur : patch.backgroundBlur,
+    backgroundIntensity: patch.backgroundIntensity === undefined ? current.backgroundIntensity : patch.backgroundIntensity,
     question: patch.question === undefined ? current.question : patch.question,
     options: patch.options === undefined ? current.options : patch.options,
   };

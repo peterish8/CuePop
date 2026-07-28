@@ -14,6 +14,9 @@ export interface DeckItem {
   type: DeckItemType;
   title: string;
   imageUrl: string | null;
+  backgroundImageUrl: string | null;
+  backgroundBlur: number;
+  backgroundIntensity: number;
   question: string | null;
   options: PollOption[];
   notes: string | null;
@@ -48,9 +51,11 @@ export interface SessionRecord {
   hostUserId: string;
   code: string;
   controllerToken: string;
+  remotePasswordHash: string | null;
   status: string;
   currentItemId: string | null;
   joinLocked: number;
+  runVersion: number;
   createdAt: string;
   endedAt: string | null;
 }

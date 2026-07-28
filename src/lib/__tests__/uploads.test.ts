@@ -1,5 +1,22 @@
-import { describe, expect, it } from "vitest";
-import { hasValidImageSignature, storedMediaFilename } from "@/lib/uploads";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { closeDatabase, initializeDatabase, repo, resetDbForTests } from "@/lib/db";
+import { deleteStoredMediaIfUnused, hasValidImageSignature, storedMediaFilename } from "@/lib/uploads";
+
+let tempDir: string;
+
+beforeEach(() => {
+  tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "cuepop-uploads-"));
+  resetDbForTests(path.join(tempDir, "test.db"));
+  initializeDatabase();
+});
+
+afterEach(() => {
+  closeDatabase();
+  fs.rmSync(tempDir, { recursive: true, force: true });
+});
 
 describe("image upload signatures", () => {
   it("accepts known image headers", () => {
@@ -18,5 +35,25 @@ describe("image upload signatures", () => {
     expect(storedMediaFilename("/api/media/123-abc.png")).toBe("123-abc.png");
     expect(storedMediaFilename("/art/demo-slide-1.svg")).toBeNull();
     expect(storedMediaFilename("/api/media/../../secret")).toBeNull();
+  });
+
+  it("keeps a reused backdrop until its final moment reference is removed", async () => {
+    const user = repo.findUserByEmail("demo@cuepop.app")!;
+    const deck = repo.listDecks(user.id)[0];
+    const filename = "shared-backdrop-test.png";
+    const sharedUrl = `/api/media/${filename}`;
+    const uploadDirectory = path.join(process.cwd(), "data", "uploads");
+    fs.mkdirSync(uploadDirectory, { recursive: true });
+    fs.writeFileSync(path.join(uploadDirectory, filename), "fixture");
+    const first = repo.getDeck(deck.id)!.items![1];
+    const second = repo.getDeck(deck.id)!.items![3];
+    repo.updateDeckItem(first.id, { backgroundImageUrl: sharedUrl });
+    repo.updateDeckItem(second.id, { backgroundImageUrl: sharedUrl });
+
+    expect(await deleteStoredMediaIfUnused(sharedUrl)).toBe(false);
+    repo.updateDeckItem(first.id, { backgroundImageUrl: null });
+    expect(await deleteStoredMediaIfUnused(sharedUrl)).toBe(false);
+    repo.updateDeckItem(second.id, { backgroundImageUrl: null });
+    expect(await deleteStoredMediaIfUnused(sharedUrl)).toBe(true);
   });
 });

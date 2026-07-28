@@ -284,3 +284,7 @@
   .cue-landing #keepsake + section .cue-container > .mt-12 > div { grid-area: auto !important; }
   .cue-landing #product > .cue-container > .mt-14 > div + div { border-left: 0; border-top: 1px solid rgba(255,255,255,.12); }
 }
+
+/* Keep the opening message visually centered even when its line breaks change. */
+.cue-landing > section:first-of-type > .cue-container > .cue-reveal { width: min(100%, 48rem); margin-inline: auto; text-align: center; }
+.cue-landing > section:first-of-type .cue-display { width: 100%; margin-inline: auto; text-align: center; }

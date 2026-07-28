@@ -96,7 +96,7 @@ export function attachSocketServer(httpServer: HttpServer) {
     socket.on("host:command", (payload: { code?: unknown; token?: unknown; command?: unknown }, ack?: SocketAck) => {
       try {
         const normalized = normalizeCode(payload?.code);
-        if (typeof payload?.token !== "string" || payload.token.length < 32) throw new Error("Invalid presenter control token.");
+        if (typeof payload?.token !== "string" || payload.token.length < 20) throw new Error("Invalid presenter control token.");
         const allowed = new Set<HostCommandType>([
           "showJoin",
           "start",

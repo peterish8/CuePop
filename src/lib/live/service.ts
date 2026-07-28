@@ -1,4 +1,5 @@
-import { randomBytes } from "node:crypto";
+import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import bcrypt from "bcryptjs";
 import { nanoid } from "nanoid";
 import { getDb, repo } from "@/lib/db";
 import type { DeckItem, SessionRecord } from "@/lib/schema";
@@ -22,9 +23,11 @@ function rowToSession(row: any): SessionRecord {
     hostUserId: row.host_user_id,
     code: row.code,
     controllerToken: row.controller_token,
+    remotePasswordHash: row.remote_password_hash,
     status: row.status,
     currentItemId: row.current_item_id,
     joinLocked: row.join_locked,
+    runVersion: Number(row.run_version || 0),
     createdAt: row.created_at,
     endedAt: row.ended_at,
   };
@@ -70,6 +73,9 @@ function publicItem(item: DeckItem | null, status: RoomStatus): RoomSnapshot["cu
     type: item.type,
     title: item.title,
     imageUrl: item.imageUrl,
+    backgroundImageUrl: item.backgroundImageUrl,
+    backgroundBlur: item.backgroundBlur,
+    backgroundIntensity: item.backgroundIntensity,
     question: item.question,
     options: item.options.map((option) => ({
       id: option.id,
@@ -104,6 +110,7 @@ export function getRoomSnapshot(code: string): RoomSnapshot | null {
     waitingMessage: deck.waitingMessage,
     keepsakeThemes: deck.keepsakeThemes,
     status: session.status as RoomStatus,
+    runVersion: session.runVersion,
     joinLocked: Boolean(session.joinLocked),
     currentIndex,
     totalItems: items.length,
@@ -119,7 +126,55 @@ export function getHostRoom(code: string, token: string): HostRoomPayload {
   const deck = repo.getDeck(session.deckId);
   const snapshot = getRoomSnapshot(code);
   if (!deck || !snapshot) throw new Error("Live room not found.");
-  return { snapshot, items: deck.items || [] };
+  return { snapshot, items: deck.items || [], remotePasswordSet: Boolean(session.remotePasswordHash) };
+}
+
+function remoteSignature(session: SessionRecord, expiresAt: number) {
+  return createHmac("sha256", session.controllerToken)
+    .update(`${session.code}.${expiresAt}.${session.remotePasswordHash || ""}`)
+    .digest("base64url");
+}
+
+function createRemoteToken(session: SessionRecord) {
+  const expiresAt = Date.now() + 12 * 60 * 60 * 1000;
+  return `${expiresAt}.${remoteSignature(session, expiresAt)}`;
+}
+
+export function validateRemoteAccess(code: string, token: string) {
+  const session = getSessionByCode(code);
+  if (!session?.remotePasswordHash) throw new Error("Phone control has not been enabled for this room.");
+  const [expiresText, signature] = token.split(".");
+  const expiresAt = Number(expiresText);
+  if (!Number.isFinite(expiresAt) || expiresAt < Date.now() || !signature) throw new Error("Phone control access has expired. Enter the room password again.");
+  const expected = remoteSignature(session, expiresAt);
+  const expectedBytes = Buffer.from(expected);
+  const receivedBytes = Buffer.from(signature);
+  if (expectedBytes.length !== receivedBytes.length || !timingSafeEqual(expectedBytes, receivedBytes)) throw new Error("Phone control access is invalid.");
+  return session;
+}
+
+export async function setRemotePassword(code: string, token: string, password: string) {
+  const session = validateController(code, token);
+  if (password.trim().length < 4) throw new Error("Use at least 4 characters for the phone control password.");
+  const passwordHash = await bcrypt.hash(password, 12);
+  getDb().prepare("UPDATE live_sessions SET remote_password_hash=? WHERE id=?").run(passwordHash, session.id);
+  return { enabled: true };
+}
+
+export async function authenticateRemoteAccess(code: string, password: string) {
+  const session = getSessionByCode(code);
+  if (!session?.remotePasswordHash) throw new Error("The presenter has not enabled phone control yet.");
+  if (!(await bcrypt.compare(password, session.remotePasswordHash))) throw new Error("That phone control password is not correct.");
+  return { remoteToken: createRemoteToken(session) };
+}
+
+export function getRemoteRoom(code: string, token: string): HostRoomPayload {
+  validateRemoteAccess(code, token);
+  const session = getSessionByCode(code)!;
+  const deck = repo.getDeck(session.deckId);
+  const snapshot = getRoomSnapshot(code);
+  if (!deck || !snapshot) throw new Error("Live room not found.");
+  return { snapshot, items: deck.items || [], remotePasswordSet: true };
 }
 
 export function joinAttendee(code: string, input: { deviceId: string; name?: string | null }) {
@@ -164,7 +219,8 @@ export function submitVote(code: string, input: { attendeeId: string; itemId: st
 }
 
 export function executeHostCommand(code: string, token: string, command: HostCommandType) {
-  const session = validateController(code, token);
+  const session = getSessionByCode(code);
+  if (!session || (session.controllerToken !== token && !isValidRemoteToken(code, token))) throw new Error("Invalid presenter control token.");
   if (session.status === "ended") throw new Error("This session has ended.");
   const deck = repo.getDeck(session.deckId);
   if (!deck) throw new Error("Deck not found.");
@@ -173,6 +229,7 @@ export function executeHostCommand(code: string, token: string, command: HostCom
   let status = session.status as RoomStatus;
   let currentItemId = session.currentItemId;
   let joinLocked = session.joinLocked;
+  let runVersion = session.runVersion;
   let endedAt = session.endedAt;
 
   switch (command) {
@@ -182,6 +239,11 @@ export function executeHostCommand(code: string, token: string, command: HostCom
       break;
     case "start":
       if (status !== "join") throw new Error("Return to the join screen before restarting the deck.");
+      // Returning to the join screen is also the explicit restart path. Keep the
+      // room and its attendees, but clear prior answers so the same people can
+      // respond to the deck again instead of hitting the one-answer constraint.
+      getDb().prepare("DELETE FROM responses WHERE session_id=?").run(session.id);
+      runVersion += 1;
       status = "presenting";
       currentItemId = items[0]?.id || null;
       break;
@@ -224,6 +286,8 @@ export function executeHostCommand(code: string, token: string, command: HostCom
       break;
     }
     case "end":
+      if (status === "active") throw new Error("Close voting before ending the session.");
+      if (status === "closed") throw new Error("Reveal the result or return to the join screen before ending the session.");
       status = "ended";
       endedAt = new Date().toISOString();
       break;
@@ -235,9 +299,13 @@ export function executeHostCommand(code: string, token: string, command: HostCom
       break;
   }
 
-  getDb().prepare("UPDATE live_sessions SET status=?,current_item_id=?,join_locked=?,ended_at=? WHERE id=?")
-    .run(status, currentItemId, joinLocked, endedAt, session.id);
+  getDb().prepare("UPDATE live_sessions SET status=?,current_item_id=?,join_locked=?,run_version=?,ended_at=? WHERE id=?")
+    .run(status, currentItemId, joinLocked, runVersion, endedAt, session.id);
   return getRoomSnapshot(code)!;
+}
+
+function isValidRemoteToken(code: string, token: string) {
+  try { validateRemoteAccess(code, token); return true; } catch { return false; }
 }
 
 export function getReport(code: string, token: string) {

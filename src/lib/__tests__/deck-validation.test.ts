@@ -46,4 +46,17 @@ describe("deck item validation", () => {
     });
     expect(result.success).toBe(false);
   });
+
+  it("accepts a local question background and keeps visual controls bounded", () => {
+    expect(deckItemCreateSchema.safeParse({
+      type: "poll",
+      title: "Room pulse",
+      question: "How are you feeling?",
+      options: [{ id: "a", label: "Ready" }, { id: "b", label: "Unsure" }],
+      backgroundImageUrl: "/api/media/room.jpg",
+      backgroundBlur: 14,
+      backgroundIntensity: 72,
+    }).success).toBe(true);
+    expect(deckItemCreateSchema.safeParse({ type: "poll", title: "Room pulse", backgroundBlur: 25 }).success).toBe(false);
+  });
 });

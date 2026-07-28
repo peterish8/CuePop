@@ -1,12 +1,15 @@
 import { jsonError, jsonOk } from "@/lib/api";
-import { getHostRoom, getRoomSnapshot } from "@/lib/live/service";
+import { getHostRoom, getRemoteRoom, getRoomSnapshot } from "@/lib/live/service";
 
 export async function GET(request: Request, { params }: { params: Promise<{ code: string }> }) {
   const { code } = await params;
   const token = new URL(request.url).searchParams.get("token");
+  const remoteToken = new URL(request.url).searchParams.get("remoteToken");
   try {
     const response = token
       ? jsonOk(getHostRoom(code.toUpperCase(), token))
+      : remoteToken
+        ? jsonOk(getRemoteRoom(code.toUpperCase(), remoteToken))
       : (() => {
           const snapshot = getRoomSnapshot(code.toUpperCase());
           return snapshot ? jsonOk(snapshot) : jsonError("Room not found.", 404);

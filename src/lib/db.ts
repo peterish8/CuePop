@@ -67,6 +67,9 @@ export function initializeDatabase() {
       type TEXT NOT NULL,
       title TEXT NOT NULL DEFAULT '',
       image_url TEXT,
+      background_image_url TEXT,
+      background_blur INTEGER NOT NULL DEFAULT 0,
+      background_intensity INTEGER NOT NULL DEFAULT 64,
       question TEXT,
       options_json TEXT NOT NULL DEFAULT '[]',
       notes TEXT,
@@ -80,9 +83,11 @@ export function initializeDatabase() {
       host_user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       code TEXT NOT NULL UNIQUE,
       controller_token TEXT NOT NULL UNIQUE,
+      remote_password_hash TEXT,
       status TEXT NOT NULL DEFAULT 'join',
       current_item_id TEXT,
       join_locked INTEGER NOT NULL DEFAULT 0,
+      run_version INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL,
       ended_at TEXT
     );
@@ -108,8 +113,19 @@ export function initializeDatabase() {
     CREATE INDEX IF NOT EXISTS idx_responses_session_item ON responses(session_id, item_id);
   `);
 
+  ensureColumn(database, "deck_items", "background_image_url", "background_image_url TEXT");
+  ensureColumn(database, "deck_items", "background_blur", "background_blur INTEGER NOT NULL DEFAULT 0");
+  ensureColumn(database, "deck_items", "background_intensity", "background_intensity INTEGER NOT NULL DEFAULT 64");
+  ensureColumn(database, "live_sessions", "remote_password_hash", "remote_password_hash TEXT");
+  ensureColumn(database, "live_sessions", "run_version", "run_version INTEGER NOT NULL DEFAULT 0");
+
   seedDemo(database);
   fs.mkdirSync(path.join(process.cwd(), "data", "uploads"), { recursive: true });
+}
+
+function ensureColumn(database: Database.Database, table: string, column: string, definition: string) {
+  const columns = database.prepare(`PRAGMA table_info(${table})`).all() as { name: string }[];
+  if (!columns.some((entry) => entry.name === column)) database.exec(`ALTER TABLE ${table} ADD COLUMN ${definition}`);
 }
 
 function seedDemo(database: Database.Database) {
@@ -217,6 +233,9 @@ function rowToDeckItem(row: any): DeckItem {
     type: row.type,
     title: row.title,
     imageUrl: row.image_url,
+    backgroundImageUrl: row.background_image_url || null,
+    backgroundBlur: Number(row.background_blur || 0),
+    backgroundIntensity: Number(row.background_intensity ?? 64),
     question: row.question,
     options: safeJsonParse<PollOption[]>(row.options_json, []),
     notes: row.notes,
@@ -317,16 +336,16 @@ export const repo: Repository = {
     const id = nanoid();
     const now = new Date().toISOString();
     const position = (getDb().prepare("SELECT COALESCE(MAX(position), -1) + 1 AS next FROM deck_items WHERE deck_id=?").get(deckId) as any).next;
-    getDb().prepare(`INSERT INTO deck_items (id,deck_id,position,type,title,image_url,question,options_json,notes,reveal_mode,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`)
-      .run(id, deckId, position, input.type, input.title || (input.type === "slide" ? "Untitled slide" : "Untitled moment"), input.imageUrl || null, input.question || null, JSON.stringify(input.options || []), input.notes || null, input.revealMode || "manual", now, now);
+    getDb().prepare(`INSERT INTO deck_items (id,deck_id,position,type,title,image_url,background_image_url,background_blur,background_intensity,question,options_json,notes,reveal_mode,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`)
+      .run(id, deckId, position, input.type, input.title || (input.type === "slide" ? "Untitled slide" : "Untitled moment"), input.imageUrl || null, input.backgroundImageUrl || null, input.backgroundBlur || 0, input.backgroundIntensity ?? 64, input.question || null, JSON.stringify(input.options || []), input.notes || null, input.revealMode || "manual", now, now);
     return repo.getDeckItem(id)!;
   },
   updateDeckItem(itemId: string, input: Partial<DeckItem>) {
     const current = repo.getDeckItem(itemId);
     if (!current) return null;
     const next = { ...current, ...input };
-    getDb().prepare(`UPDATE deck_items SET title=?,image_url=?,question=?,options_json=?,notes=?,reveal_mode=?,updated_at=? WHERE id=?`)
-      .run(next.title, next.imageUrl, next.question, JSON.stringify(next.options), next.notes, next.revealMode, new Date().toISOString(), itemId);
+    getDb().prepare(`UPDATE deck_items SET title=?,image_url=?,background_image_url=?,background_blur=?,background_intensity=?,question=?,options_json=?,notes=?,reveal_mode=?,updated_at=? WHERE id=?`)
+      .run(next.title, next.imageUrl, next.backgroundImageUrl, next.backgroundBlur, next.backgroundIntensity, next.question, JSON.stringify(next.options), next.notes, next.revealMode, new Date().toISOString(), itemId);
     return repo.getDeckItem(itemId);
   },
   deleteDeckItem(itemId: string) {

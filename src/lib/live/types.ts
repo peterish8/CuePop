@@ -9,6 +9,9 @@ export interface PublicDeckItem {
   type: DeckItemType;
   title: string;
   imageUrl: string | null;
+  backgroundImageUrl: string | null;
+  backgroundBlur: number;
+  backgroundIntensity: number;
   question: string | null;
   options: PollOption[];
 }
@@ -27,6 +30,7 @@ export interface RoomSnapshot {
   waitingMessage: string;
   keepsakeThemes: KeepsakeTheme[];
   status: RoomStatus;
+  runVersion: number;
   joinLocked: boolean;
   currentIndex: number;
   totalItems: number;
@@ -39,6 +43,7 @@ export interface RoomSnapshot {
 export interface HostRoomPayload {
   snapshot: RoomSnapshot;
   items: DeckItem[];
+  remotePasswordSet: boolean;
 }
 
 export type SocketAck<T = unknown> = (response: { ok: true; data: T } | { ok: false; error: string }) => void;

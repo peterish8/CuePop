@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { getDb } from "@/lib/db";
 
 export const IMAGE_TYPES = {
   "image/png": "png",
@@ -49,4 +50,17 @@ export async function deleteStoredMedia(url: string | null | undefined) {
     if (error && typeof error === "object" && "code" in error && error.code === "ENOENT") return false;
     throw error;
   }
+}
+
+/**
+ * An uploaded asset may be deliberately reused as the backdrop for many
+ * moments. Only remove its file after the final database reference is gone.
+ */
+export async function deleteStoredMediaIfUnused(url: string | null | undefined) {
+  if (!storedMediaFilename(url)) return false;
+  const reference = getDb()
+    .prepare("SELECT id FROM deck_items WHERE image_url=? OR background_image_url=? LIMIT 1")
+    .get(url, url);
+  if (reference) return false;
+  return deleteStoredMedia(url);
 }
